@@ -11,6 +11,7 @@ import { TransactionsComponent } from './components/transactions/transactions.co
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { TransactionComponent } from './components/transactions/transaction/transaction.component';
 
 @NgModule({
   declarations: [AppComponent, TransactionsComponent, TransactionComponent],
