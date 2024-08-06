@@ -15,6 +15,8 @@ public partial class Transaction
 
     public decimal Significance { get; set; }
 
+    public string TransactionType { get; set; } = null!;
+
     public DateTime? ExpenseDate { get; set; }
 
     public DateTime? CreatedAt { get; set; }

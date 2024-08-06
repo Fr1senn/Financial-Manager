@@ -77,6 +77,9 @@ public partial class FinancialManagerContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(255)
                 .HasColumnName("title");
+            entity.Property(e => e.TransactionType)
+                .HasMaxLength(15)
+                .HasColumnName("transaction_type");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
             entity.HasOne(d => d.User).WithMany(p => p.Transactions)
