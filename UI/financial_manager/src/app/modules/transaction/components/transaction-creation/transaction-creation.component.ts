@@ -14,6 +14,10 @@ import { FormGroup } from '@angular/forms';
   styleUrl: './transaction-creation.component.css',
 })
 export class TransactionCreationComponent implements OnInit {
+  public transactionTypes = [
+    { key: 'income', value: 'Прибуток' },
+    { key: 'expense', value: 'Витрата' },
+  ];
   public transactionCategories: Category[] = [];
   public transaction: Transaction = {
     title: '',
