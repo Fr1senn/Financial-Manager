@@ -8,6 +8,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FinancialManagerContext>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Cors", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -21,5 +26,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("Cors");
 
 app.Run();
