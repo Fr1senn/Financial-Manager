@@ -11,5 +11,7 @@ import { TransactionDateService } from '../../utilities/transaction-date.service
 export class TransactionComponent {
   @Input() transaction: Transaction | undefined;
 
-  public transactionDateService: ITransactionDateFormatter = inject(TransactionDateService);
+  public transactionDateService: ITransactionDateFormatter = inject(
+    TransactionDateService
+  );
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 import { TransactionComponent } from './components/transaction/transaction.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
@@ -39,5 +40,6 @@ import { MatSelectModule } from '@angular/material/select';
     MatDialogActions,
   ],
   exports: [TransactionsComponent],
+  providers: [provideHttpClient(withFetch())],
 })
 export class TransactionModule {}
