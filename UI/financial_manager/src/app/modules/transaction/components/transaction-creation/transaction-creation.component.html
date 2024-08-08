@@ -1,0 +1,98 @@
+<mat-dialog-content>
+  <div class="w-full mb-[5px] flex items-center justify-between">
+    <span class="font-medium">Створення транзакції</span>
+    <mat-icon mat-dialog-close>clear</mat-icon>
+  </div>
+  <form [formGroup]="transactionCreationForm!" class="space-y-[5px]">
+    <mat-form-field class="w-full">
+      <mat-label>Назва транзакції</mat-label>
+      <input formControlName="title" [(ngModel)]="transaction.title" matInput />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Вартість транзакції</mat-label>
+      <input
+        required
+        formControlName="significance"
+        [(ngModel)]="transaction.significance"
+        type="number"
+        min="1"
+        value="1"
+        matInput
+      />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Тип транзакції</mat-label>
+      <mat-select
+        required
+        formControlName="transactionType"
+        [(ngModel)]="selectedTransactionType"
+        [(ngModel)]="transaction.transactionType"
+      >
+        @for (transactionType of transactionTypes; track transactionType) {
+        <mat-option [value]="transactionType.key">{{
+          transactionType.value
+        }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if(selectedTransactionType === 'expense'){
+    <mat-form-field class="w-full">
+      <mat-label>Застосувати транзакцію</mat-label>
+      <input
+        [(ngModel)]="transaction.expenseDate"
+        [ngModelOptions]="{ standalone: true }"
+        type="datetime-local"
+        matInput
+      />
+      <mat-hint
+        >Залиште поле порожнім, якщо Вас влаштовує поточна дата</mat-hint
+      >
+    </mat-form-field>
+    } @if (selectedTransactionType === 'expense') {
+    <mat-form-field class="w-full">
+      <mat-label>Категорія транзакції</mat-label>
+      <mat-select>
+        <mat-form-field class="w-full">
+          <mat-label>Пошук категорії транзакції</mat-label>
+          <input
+            [(ngModel)]="seekingTransactionCategory"
+            [ngModelOptions]="{ standalone: true }"
+            (input)="filterTransactionCategories()"
+            type="search"
+            matInput
+          />
+        </mat-form-field>
+        <div class="overflow-y-auto max-h-[96px] min-h-[48px]">
+          @for (transactionCategory of transactionCategories; track
+          transactionCategory) {
+          <mat-option [value]="transactionCategory.title">{{
+            transactionCategory.title
+          }}</mat-option>
+          }
+        </div>
+        <button class="w-full" mat-button>
+          <mat-icon>add</mat-icon>
+          Створити нову транзакцію
+        </button>
+        <hr />
+        <mat-paginator
+          [length]="transactionCategories.length"
+          [pageSize]="4"
+          [hidePageSize]="true"
+          [showFirstLastButtons]="true"
+        ></mat-paginator>
+      </mat-select>
+    </mat-form-field>
+    }
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Скасувати</button>
+  <button
+    mat-button
+    (click)="createTransaction()"
+    [disabled]="transactionCreationForm?.invalid"
+  >
+    Створити
+  </button>
+</mat-dialog-actions>

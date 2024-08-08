@@ -1,0 +1,31 @@
+<div
+  class="border border-[#005CBB] my-[10px] p-[10px] w-full overflow-hidden rounded-xl hover:bg-[#d8e4fc]/[.5] hover:cursor-pointer"
+>
+  <p class="!mb-0 w-full truncate text-ellipse max-w-full">
+    {{ transaction?.title }}
+  </p>
+  <hr />
+  @if (transaction?.transactionType === 'income') {
+  <span class="text-green-500"
+    >+{{ transaction?.significance | currency }}</span
+  >
+  } @else {
+  <div class="flex justify-between">
+    <span class="text-red-500"
+      >-{{ transaction?.significance | currency }}</span
+    >
+    <span>Health & Care</span>
+  </div>
+  }
+  <hr />
+  <span class="block my-[5px]"
+    >Створена:
+    {{ transactionDateService.formatDate(transaction?.createdAt!) }}</span
+  >
+  @if (transaction?.transactionType === 'expense') {
+  <span class="block"
+    >Застосувати:
+    {{ transactionDateService.formatDate(transaction?.expenseDate!) }}</span
+  >
+  }
+</div>

@@ -1,0 +1,27 @@
+<div
+  class="w-[20%] border border-[#005CBB] size-full float-right rounded-xl overflow-hidden"
+>
+  <div class="h-full flex flex-col justify-between">
+    <div>
+      <button class="w-full" mat-button (click)="createTransaction()">
+        <mat-icon>add</mat-icon>
+        Створити нову транзакцію
+      </button>
+      <hr />
+    </div>
+    <div class="grow mx-[10px] overflow-y-auto">
+      @for (transaction of transactions; track transaction) {
+      <app-transaction [transaction]="transaction"></app-transaction>
+      }
+    </div>
+    <div>
+      <hr />
+      <mat-paginator
+        [length]="transactions.length"
+        [pageSize]="7"
+        [hidePageSize]="true"
+        [showFirstLastButtons]="true"
+      ></mat-paginator>
+    </div>
+  </div>
+</div>
