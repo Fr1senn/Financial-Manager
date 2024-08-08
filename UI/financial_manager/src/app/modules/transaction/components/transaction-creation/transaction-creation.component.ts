@@ -19,6 +19,8 @@ export class TransactionCreationComponent implements OnInit {
     { key: 'expense', value: 'Витрата' },
   ];
   public transactionCategories: Category[] = [];
+  public selectedTransactionType: string = '';
+  public seekingTransactionCategory: string = '';
   public transaction: Transaction = {
     title: '',
     significance: 1,
