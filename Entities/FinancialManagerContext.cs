@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace financial_manager.Models;
+namespace financial_manager.Entities;
 
 public partial class FinancialManagerContext : DbContext
 {
@@ -14,11 +14,11 @@ public partial class FinancialManagerContext : DbContext
         _configuration = configuration;
     }
 
-    public virtual DbSet<Category> Categories { get; set; }
+    public virtual DbSet<CategoryEntity> Categories { get; set; }
 
-    public virtual DbSet<Transaction> Transactions { get; set; }
+    public virtual DbSet<TransactionEntity> Transactions { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserEntity> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -32,7 +32,7 @@ public partial class FinancialManagerContext : DbContext
     {
         modelBuilder.HasPostgresEnum("transaction_type", new[] { "income", "expense" });
 
-        modelBuilder.Entity<Category>(entity =>
+        modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("categories_pkey");
 
@@ -55,7 +55,7 @@ public partial class FinancialManagerContext : DbContext
                 .HasConstraintName("categories_user_id_fkey");
         });
 
-        modelBuilder.Entity<Transaction>(entity =>
+        modelBuilder.Entity<TransactionEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("transactions_pkey");
 
@@ -93,7 +93,7 @@ public partial class FinancialManagerContext : DbContext
                 .HasConstraintName("transactions_category_id_user_id_fkey");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<UserEntity>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("users_pkey");
 

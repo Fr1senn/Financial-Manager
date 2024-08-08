@@ -1,4 +1,4 @@
-using financial_manager.Models;
+using financial_manager.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
