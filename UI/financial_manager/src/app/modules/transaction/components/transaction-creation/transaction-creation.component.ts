@@ -5,6 +5,7 @@ import { Category } from '../../../../models/category';
 import { TransactionCategoryService } from '../../services/transaction-category.service';
 import { Transaction } from '../../../../models/transaction';
 import { TransactionService } from '../../services/transaction.service';
+import { MatDialogRef } from '@angular/material/dialog';
 import { TransactionCreationFormValidatorService } from '../../utilities/transaction-creation-form-validator.service';
 import { FormGroup } from '@angular/forms';
 
@@ -29,6 +30,10 @@ export class TransactionCreationComponent implements OnInit {
     createdAt: new Date(),
   };
   public transactionCreationForm: FormGroup | undefined;
+
+  private readonly dialogRef = inject(
+    MatDialogRef<TransactionCreationComponent>
+  );
 
   private readonly transactionCategoriesFilter: ITransactionCategoriesFilter =
     inject(TransactionCategoriesFilterService);
