@@ -1,10 +1,9 @@
 import { User } from "./user";
 
 export type Category = {
-  id: number;
+  id?: number;
   title: string;
   createdAt: Date;
-  userId: number;
 
-  user: User;
+  user?: User;
 };
