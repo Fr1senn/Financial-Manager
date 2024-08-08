@@ -1,4 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { ITransactionCategoriesFilter } from '../../utilities/interfaces/ITransactionCategoriesFilter';
+import { TransactionCategoriesFilterService } from '../../utilities/transaction-categories-filter.service';
+import { Category } from '../../../../models/category';
 import { TransactionCategoryService } from '../../services/transaction-category.service';
 import { Transaction } from '../../../../models/transaction';
 import { TransactionService } from '../../services/transaction.service';
@@ -20,6 +23,9 @@ export class TransactionCreationComponent implements OnInit {
     createdAt: new Date(),
   };
   public transactionCreationForm: FormGroup | undefined;
+
+  private readonly transactionCategoriesFilter: ITransactionCategoriesFilter =
+    inject(TransactionCategoriesFilterService);
   private readonly transactionCategoryService: TransactionCategoryService =
     inject(TransactionCategoryService);
   private readonly transactionService: TransactionService =
@@ -41,6 +47,17 @@ export class TransactionCreationComponent implements OnInit {
     this.getTransactionCategories();
     this.transactionCreationForm =
       this.transactionCreationFormValidatorService.createForm();
+  }
+
+  public filterTransactionCategories() {
+    if (this.seekingTransactionCategory === '') {
+      this.getTransactionCategories();
+    }
+    this.transactionCategories =
+      this.transactionCategoriesFilter.filterTransactionCategory(
+        this.seekingTransactionCategory,
+        this.transactionCategories
+      );
   }
 
   private getTransactionCategories(): void {
