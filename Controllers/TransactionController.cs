@@ -1,4 +1,5 @@
-﻿using financial_manager.Repositories;
+﻿using financial_manager.Models;
+using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,20 @@ namespace financial_manager.Controllers
         {
             return Ok(await _transactionRepository.GetTransactionsAsync(packSize, pageNumber));
             //return Ok(10);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTransacionAsync([FromQuery] int transactionId)
+        {
+            try
+            {
+                await _transactionRepository.DeleteTransactionAsync(transactionId);
+                return Ok(new OperationResult(true));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, ex.Message));
+            }
         }
     }
 }
