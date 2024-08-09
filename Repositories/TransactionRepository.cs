@@ -40,5 +40,18 @@ namespace financial_manager.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task DeleteTransactionAsync(int transactionId)
+        {
+            TransactionEntity? transaction = await _financialManagerContext.Transactions.Where(t => t.Id == transactionId).FirstOrDefaultAsync();
+
+            if (transaction is null)
+            {
+                throw new NullReferenceException("The specified transaction does not exist");
+            }
+
+            _financialManagerContext.Transactions.Remove(transaction);
+            await _financialManagerContext.SaveChangesAsync();
+        }
     }
 }
