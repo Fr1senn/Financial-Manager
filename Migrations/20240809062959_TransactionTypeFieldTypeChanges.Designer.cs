@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using financial_manager.Models;
 using financial_manager.Entities;
 
 #nullable disable
@@ -13,8 +12,8 @@ using financial_manager.Entities;
 namespace financial_manager.Migrations
 {
     [DbContext(typeof(FinancialManagerContext))]
-    [Migration("20240801070519_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240809062959_TransactionTypeFieldTypeChanges")]
+    partial class TransactionTypeFieldTypeChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +26,7 @@ namespace financial_manager.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "transaction_type", new[] { "income", "expense" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("financial_manager.Models.Category", b =>
+            modelBuilder.Entity("financial_manager.Entities.CategoryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +62,7 @@ namespace financial_manager.Migrations
                     b.ToTable("categories", (string)null);
                 });
 
-            modelBuilder.Entity("financial_manager.Models.Transaction", b =>
+            modelBuilder.Entity("financial_manager.Entities.TransactionEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,6 +98,12 @@ namespace financial_manager.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("title");
 
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("transaction_type");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
@@ -113,7 +118,7 @@ namespace financial_manager.Migrations
                     b.ToTable("transactions", (string)null);
                 });
 
-            modelBuilder.Entity("financial_manager.Models.User", b =>
+            modelBuilder.Entity("financial_manager.Entities.UserEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,9 +172,9 @@ namespace financial_manager.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("financial_manager.Models.Category", b =>
+            modelBuilder.Entity("financial_manager.Entities.CategoryEntity", b =>
                 {
-                    b.HasOne("financial_manager.Models.User", "User")
+                    b.HasOne("financial_manager.Entities.UserEntity", "User")
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -179,15 +184,15 @@ namespace financial_manager.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("financial_manager.Models.Transaction", b =>
+            modelBuilder.Entity("financial_manager.Entities.TransactionEntity", b =>
                 {
-                    b.HasOne("financial_manager.Models.User", "User")
+                    b.HasOne("financial_manager.Entities.UserEntity", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
                         .IsRequired()
                         .HasConstraintName("transactions_user_id_fkey");
 
-                    b.HasOne("financial_manager.Models.Category", "Category")
+                    b.HasOne("financial_manager.Entities.CategoryEntity", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId", "UserId")
                         .HasPrincipalKey("Id", "UserId")
@@ -198,12 +203,12 @@ namespace financial_manager.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("financial_manager.Models.Category", b =>
+            modelBuilder.Entity("financial_manager.Entities.CategoryEntity", b =>
                 {
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("financial_manager.Models.User", b =>
+            modelBuilder.Entity("financial_manager.Entities.UserEntity", b =>
                 {
                     b.Navigation("Categories");
 
