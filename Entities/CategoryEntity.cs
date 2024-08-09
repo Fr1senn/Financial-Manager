@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace financial_manager.Entities;
 
-internal partial class CategoryEntity
+public partial class CategoryEntity
 {
     public int Id { get; set; }
 

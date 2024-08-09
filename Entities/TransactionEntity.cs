@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace financial_manager.Entities;
 
-internal partial class TransactionEntity
+public partial class TransactionEntity
 {
     public int Id { get; set; }
 
@@ -19,7 +19,7 @@ internal partial class TransactionEntity
 
     public DateTime? ExpenseDate { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public virtual CategoryEntity? Category { get; set; }
 
