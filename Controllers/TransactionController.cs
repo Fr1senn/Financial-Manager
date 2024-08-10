@@ -44,5 +44,19 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTransactionAsync([FromBody] Transaction transaction)
+        {
+            try
+            {
+                await _transactionRepository.CreateTransactionAsync(transaction);
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
     }
 }
