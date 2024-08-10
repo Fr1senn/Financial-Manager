@@ -2,19 +2,11 @@
 {
     public class Category
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
         public string Title { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public List<Transaction>? Transactions { get; set; }
 
         public Category() { }
-
-        public Category(int id, string title, List<Transaction> transactions, DateTime createdAt)
-        {
-            Id = id;
-            Title = title;
-            CreatedAt = createdAt;
-            Transactions = transactions;
-        }
     }
 }

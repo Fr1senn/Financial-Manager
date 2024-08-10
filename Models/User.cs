@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public int Id { get; private set; }
+        public int Id { get; init; }
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public DateTime RegistrationDate { get; private set; }
@@ -25,18 +25,6 @@
                 }
                 _budgetUpdateDay = value;
             }
-        }
-
-        public User(string fullName, string email, int monthlyBudget, short budgetUpdateDay, List<Category> categories, List<Transaction> transactions, string password)
-        {
-            FullName = fullName;
-            Email = email;
-            RegistrationDate = DateTime.Now;
-            MonthlyBudget = monthlyBudget;
-            BudgetUpdateDay = budgetUpdateDay;
-            Categories = categories;
-            Transactions = transactions;
-            HashedPassword = password;
         }
     }
 }

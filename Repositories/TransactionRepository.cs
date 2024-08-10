@@ -27,6 +27,8 @@ namespace financial_manager.Repositories
                     Title = t.Title,
                     Significance = t.Significance,
                     TransactionType = t.TransactionType,
+                    CreatedAt = t.CreatedAt,
+                    ExpenseDate = t.ExpenseDate,
                     Category = t.Category != null ? new Category
                     {
                         Id = t.Category.Id,
@@ -34,8 +36,6 @@ namespace financial_manager.Repositories
                         CreatedAt = t.Category.CreatedAt,
                         Transactions = null
                     } : null,
-                    CreatedAt = t.CreatedAt,
-                    ExpenseDate = t.ExpenseDate,
                 })
                 .AsNoTracking()
                 .ToListAsync();

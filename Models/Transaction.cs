@@ -2,26 +2,27 @@
 {
     public class Transaction
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
         public string Title { get; set; } = string.Empty;
         public decimal Significance { get; set; }
-        public string TransactionType { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? ExpenseDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-
         public Category? Category { get; set; }
 
-        public Transaction() { }
-
-        public Transaction(int id, string title, decimal significance, string transactionType, Category? category, DateTime? createdAt = null, DateTime? expenseDate = null)
+        private string _transactionType;
+        public string TransactionType
         {
-            Id = id;
-            Title = title;
-            Significance = significance;
-            TransactionType = transactionType;
-            Category = category;
-            ExpenseDate = expenseDate;
-            CreatedAt = createdAt ?? DateTime.Now;
+            get => _transactionType;
+            set
+            {
+                if (value != "income" && value != "expense")
+                {
+                    throw new ArgumentException("Transaction type must be either 'income' or 'expense'.");
+                }
+                _transactionType = value;
+            }
         }
+
+        public Transaction() { }
     }
 }
