@@ -7,5 +7,6 @@ namespace financial_manager.Repositories.Interfaces
     {
         Task<IEnumerable<Transaction>> GetTransactionsAsync(int packSize = 10, int pageNumber = 0);
         Task DeleteTransactionAsync(int transactionId);
+        Task CreateTransactionAsync(Transaction transaction);
     }
 }

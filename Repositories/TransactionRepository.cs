@@ -53,5 +53,41 @@ namespace financial_manager.Repositories
             _financialManagerContext.Transactions.Remove(transaction);
             await _financialManagerContext.SaveChangesAsync();
         }
+
+        public async Task CreateTransactionAsync(Transaction transaction)
+        {
+            if (transaction is null)
+            {
+                throw new NullReferenceException(nameof(Transaction));
+            }
+
+            Category? category = await _financialManagerContext.Categories
+                .Where(c => c.Title == transaction.Category!.Title && c.UserId == 1)
+                .Select(c => new Category
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    CreatedAt = c.CreatedAt,
+                })
+                .FirstOrDefaultAsync();
+
+            if (category is null)
+            {
+                throw new NullReferenceException("The provided category does not exist");
+            }
+
+            _financialManagerContext.Transactions.Add(new TransactionEntity
+            {
+                UserId = 1,
+                CategoryId = category.Id,
+                Title = transaction.Title,
+                Significance = transaction.Significance,
+                TransactionType = transaction.TransactionType,
+                CreatedAt = transaction.CreatedAt,
+                ExpenseDate = transaction.ExpenseDate,
+            });
+
+            await _financialManagerContext.SaveChangesAsync();
+        }
     }
 }
