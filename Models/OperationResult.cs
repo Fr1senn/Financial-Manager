@@ -15,4 +15,15 @@ namespace financial_manager.Models
             Message = message;
         }
     }
+
+    public class OperationResult<T> : OperationResult where T : class
+    {
+        public IEnumerable<T>? Data { get; set; }
+
+        public OperationResult(bool isSuccess, HttpResponseCode httpResponseCode, string? message = null, IEnumerable<T>? data = null)
+            : base(isSuccess, httpResponseCode, message)
+        {
+            Data = data;
+        }
+    }
 }
