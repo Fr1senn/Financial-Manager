@@ -29,11 +29,11 @@ namespace financial_manager.Controllers
             try
             {
                 await _transactionRepository.DeleteTransactionAsync(transactionId);
-                return Ok(new OperationResult(true));
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, ex.Message));
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
     }

@@ -4,14 +4,13 @@ namespace financial_manager.Models
 {
     public class OperationResult
     {
-        public bool Success { get; set; }
+        public bool IsSuccess { get; set; }
         public HttpResponseCode HttpResponseCode { get; set; }
         public string? Message { get; set; }
 
-        public OperationResult(bool success, string? message = null)
         public OperationResult(bool isSuccess, HttpResponseCode httpResponseCode, string? message = null)
         {
-            Success = success;
+            IsSuccess = isSuccess;
             HttpResponseCode = httpResponseCode;
             Message = message;
         }
