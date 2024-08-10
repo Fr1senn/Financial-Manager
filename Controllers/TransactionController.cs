@@ -1,4 +1,5 @@
 ﻿using financial_manager.Models;
+using financial_manager.Models.Enums;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -20,7 +21,14 @@ namespace financial_manager.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTransactionsAsync([FromQuery] int packSize = 10, [FromQuery] int pageNumber = 0)
         {
-            return Ok(await _transactionRepository.GetTransactionsAsync(packSize, pageNumber));
+            try
+            {
+                return Ok(new OperationResult<Transaction>(true, HttpResponseCode.Ok, null, await _transactionRepository.GetTransactionsAsync(packSize, pageNumber)));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
         }
 
         [HttpDelete]
