@@ -58,5 +58,19 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateTransactionAsync([FromBody] Transaction transaction)
+        {
+            try
+            {
+                await _transactionRepository.UpdateTransactionAsync(transaction);
+                return Ok(new OperationResult(true, HttpResponseCode.Ok));
+            }
+            catch(NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
     }
 }
