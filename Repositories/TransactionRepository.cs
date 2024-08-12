@@ -71,7 +71,7 @@ namespace financial_manager.Repositories
                 Significance = transaction.Significance,
                 TransactionType = transaction.TransactionType,
                 CreatedAt = transaction.CreatedAt,
-                ExpenseDate = transaction.ExpenseDate,
+                ExpenseDate = transaction.ExpenseDate ?? DateTime.Now
             });
 
             await _financialManagerContext.SaveChangesAsync();
@@ -93,7 +93,7 @@ namespace financial_manager.Repositories
             existingTransaction.Title = transaction.Title;
             existingTransaction.Significance = transaction.Significance;
             existingTransaction.TransactionType = transaction.TransactionType;
-            existingTransaction.ExpenseDate = transaction.ExpenseDate == null ? existingTransaction.ExpenseDate : transaction.ExpenseDate;
+            existingTransaction.ExpenseDate = transaction.ExpenseDate ?? existingTransaction.ExpenseDate;
             existingTransaction.CategoryId = category.Id;
 
             await _financialManagerContext.SaveChangesAsync();
