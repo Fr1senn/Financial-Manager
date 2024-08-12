@@ -6,7 +6,7 @@
         public string Title { get; set; } = string.Empty;
         public decimal Significance { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? ExpenseDate { get; set; }
+        public DateTime? ExpenseDate { get; set; } = DateTime.Now;
         public Category? Category { get; set; }
 
         private string _transactionType;
