@@ -19,7 +19,7 @@ namespace financial_manager.Repositories
             return await _financialManagerContext.Transactions
                 .Include(t => t.Category)
                 .OrderByDescending(t => t.CreatedAt)
-                .Skip(pageNumber * packSize)
+                .Skip(packSize * pageNumber)
                 .Take(packSize)
                 .Select(t => new Transaction
                 {
