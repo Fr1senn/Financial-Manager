@@ -36,6 +36,22 @@ namespace financial_manager.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            if (categoryId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");
+
+            CategoryEntity? category = await _financialManagerContext.Categories.Where(c => c.Id == categoryId).FirstOrDefaultAsync();
+
+            if (category is null)
+            {
+                throw new NullReferenceException("The provided category does not exist");
+            }
+
+            _financialManagerContext.Categories.Remove(category);
+            await _financialManagerContext.SaveChangesAsync();
+        }
+
         public async Task CreateCategoryAsync(Category category)
         {
             if (category is null)
