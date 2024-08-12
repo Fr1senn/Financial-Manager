@@ -6,7 +6,7 @@ import { DateTime } from 'luxon';
   providedIn: 'root',
 })
 export class TransactionDateService implements ITransactionDateFormatter {
-  public formatDate(date: Date): string {
-    return DateTime.fromJSDate(date).toLocaleString(DateTime.DATETIME_SHORT);
+  public formatDate(dateTime: string): string {
+    return DateTime.fromISO(dateTime).toLocaleString(DateTime.DATETIME_SHORT);
   }
 }

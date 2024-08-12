@@ -1,3 +1,3 @@
 export interface ITransactionDateFormatter {
-  formatDate(date: Date): string;
+  formatDate(dateTime: string): string;
 }
