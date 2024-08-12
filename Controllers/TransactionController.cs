@@ -39,6 +39,10 @@ namespace financial_manager.Controllers
                 await _transactionRepository.DeleteTransactionAsync(transactionId);
                 return Ok(new OperationResult(true, HttpResponseCode.NoContent));
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
             catch (NullReferenceException ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
