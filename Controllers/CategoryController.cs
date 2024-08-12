@@ -33,6 +33,25 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategoryAsync([FromQuery] int categoryId)
+        {
+            try
+            {
+                await _categoryRepository.DeleteCategoryAsync(categoryId);
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] Category category)
         {
