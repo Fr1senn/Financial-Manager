@@ -7,5 +7,6 @@ namespace financial_manager.Repositories.Interfaces
         Task<IEnumerable<Category>> GetCategoriesAsync(int packSize = 10, int pageNumber = 0);
         Task DeleteCategoryAsync(int categoryId);
         Task CreateCategoryAsync(Category category);
+        Task UpdateCategoryAsync(Category category);
     }
 }

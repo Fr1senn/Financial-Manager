@@ -1,7 +1,6 @@
 ﻿using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
-using financial_manager.Services;
 using financial_manager.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,6 +71,28 @@ namespace financial_manager.Repositories
                     UserId = 1
                 });
 
+                await _financialManagerContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateCategoryAsync(Category category)
+        {
+            CategoryEntity? existingCategory = await _financialManagerContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
+
+            if (existingCategory is null)
+            {
+                throw new NullReferenceException("The category does not exist");
+            }
+
+            try
+            {
+                await _categoryService.GetTransactionCategoryAsync(category.Title);
+                throw new Exception("A category with this title already exists");
+            }
+            catch(NullReferenceException)
+            {
+                existingCategory.Title = category.Title;
+                
                 await _financialManagerContext.SaveChangesAsync();
             }
         }
