@@ -20,6 +20,10 @@ namespace financial_manager.Repositories
 
         public async Task<IEnumerable<Transaction>> GetTransactionsAsync(int packSize = 10, int pageNumber = 0)
         {
+            if (packSize < 0) throw new ArgumentException("The collection size can only be a non-negative integer");
+
+            if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
+
             return await _financialManagerContext.Transactions
                 .Include(t => t.Category)
                 .OrderByDescending(t => t.CreatedAt)
@@ -47,6 +51,8 @@ namespace financial_manager.Repositories
 
         public async Task DeleteTransactionAsync(int transactionId)
         {
+            if (transactionId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");
+
             TransactionEntity? transaction = await _financialManagerContext.Transactions.Where(t => t.Id == transactionId).FirstOrDefaultAsync();
 
             if (transaction is null)
