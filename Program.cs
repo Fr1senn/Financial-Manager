@@ -1,6 +1,8 @@
 using financial_manager.Entities;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
+using financial_manager.Services;
+using financial_manager.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Cors", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
+
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
