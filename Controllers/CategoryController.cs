@@ -16,6 +16,23 @@ namespace financial_manager.Controllers
         {
             _categoryRepository = categoryRepository;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategoriesAsync([FromQuery] int packSize = 10, [FromQuery] int pageNumber = 0)
+        {
+            try
+            {
+                return Ok(new OperationResult<Category>(true, HttpResponseCode.Ok, null, await _categoryRepository.GetCategoriesAsync(packSize, pageNumber)));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] Category category)
         {
