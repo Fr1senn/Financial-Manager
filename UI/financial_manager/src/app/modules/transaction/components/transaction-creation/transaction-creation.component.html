@@ -6,19 +6,11 @@
   <form [formGroup]="transactionCreationForm!" class="space-y-[5px]">
     <mat-form-field class="w-full">
       <mat-label>Назва транзакції</mat-label>
-      <input formControlName="title" [(ngModel)]="transaction.title" matInput />
+      <input formControlName="title" matInput />
     </mat-form-field>
     <mat-form-field class="w-full">
       <mat-label>Вартість транзакції</mat-label>
-      <input
-        required
-        formControlName="significance"
-        [(ngModel)]="transaction.significance"
-        type="number"
-        min="1"
-        value="1"
-        matInput
-      />
+      <input formControlName="significance" type="number" matInput />
     </mat-form-field>
     <mat-form-field class="w-full">
       <mat-label>Тип транзакції</mat-label>
@@ -26,7 +18,6 @@
         required
         formControlName="transactionType"
         [(ngModel)]="selectedTransactionType"
-        [(ngModel)]="transaction.transactionType"
       >
         @for (transactionType of transactionTypes; track transactionType) {
         <mat-option [value]="transactionType.key">{{
@@ -38,12 +29,7 @@
     @if(selectedTransactionType === 'expense'){
     <mat-form-field class="w-full">
       <mat-label>Застосувати транзакцію</mat-label>
-      <input
-        [(ngModel)]="transaction.expenseDate"
-        [ngModelOptions]="{ standalone: true }"
-        type="datetime-local"
-        matInput
-      />
+      <input formControlName="expenseDate" type="datetime-local" matInput />
       <mat-hint
         >Залиште поле порожнім, якщо Вас влаштовує поточна дата</mat-hint
       >
