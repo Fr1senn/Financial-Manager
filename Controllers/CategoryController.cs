@@ -69,5 +69,23 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateCategoryAsync([FromBody] Category category)
+        {
+            try
+            {
+                await _categoryRepository.UpdateCategoryAsync(category);
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
     }
 }
