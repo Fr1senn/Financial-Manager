@@ -61,20 +61,7 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException(nameof(Transaction));
             }
 
-            Category? category = await _financialManagerContext.Categories
-                .Where(c => c.Title == transaction.Category!.Title && c.UserId == 1)
-                .Select(c => new Category
-                {
-                    Id = c.Id,
-                    Title = c.Title,
-                    CreatedAt = c.CreatedAt,
-                })
-                .FirstOrDefaultAsync();
-
-            if (category is null)
-            {
-                throw new NullReferenceException("The provided category does not exist");
-            }
+            Category? category = await GetTransactionCategoryAsync(transaction.Category!.Title);
 
             _financialManagerContext.Transactions.Add(new TransactionEntity
             {
@@ -88,6 +75,26 @@ namespace financial_manager.Repositories
             });
 
             await _financialManagerContext.SaveChangesAsync();
+        }
+
+        private async Task<Category> GetTransactionCategoryAsync(string categoryTitle)
+        {
+            Category? category = await _financialManagerContext.Categories
+                .Where(c => c.Title == categoryTitle && c.UserId == 1)
+                .Select(c => new Category
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    CreatedAt = c.CreatedAt,
+                })
+                .FirstOrDefaultAsync();
+
+            if (category is null)
+            {
+                throw new NullReferenceException("The provided category does not exist");
+            }
+
+            return category;
         }
     }
 }
