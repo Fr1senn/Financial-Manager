@@ -13,6 +13,7 @@ export class TransactionCreationFormValidatorService {
         Validators.min(1),
       ]),
       transactionType: new FormControl('', Validators.required),
+      expenseDate: new FormControl()
     });
   }
 }
