@@ -17,7 +17,7 @@ public partial class TransactionEntity
 
     public string TransactionType { get; set; } = null!;
 
-    public DateTime? ExpenseDate { get; set; }
+    public DateTime ExpenseDate { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
