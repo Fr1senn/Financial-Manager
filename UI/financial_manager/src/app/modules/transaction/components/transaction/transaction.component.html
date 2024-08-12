@@ -20,12 +20,20 @@
   <hr />
   <span class="block my-[5px]"
     >Створена:
-    {{ transactionDateService.formatDate(transaction?.createdAt!) }}</span
-  >
+    {{
+      transactionDateService.formatDate(
+        transaction?.createdAt!.toLocaleString()
+      )
+    }}
+  </span>
   @if (transaction?.transactionType === 'expense') {
   <span class="block"
     >Застосувати:
-    {{ transactionDateService.formatDate(transaction?.expenseDate!) }}</span
+    {{
+      transactionDateService.formatDate(
+        transaction?.expenseDate!.toLocaleString()
+      )
+    }}</span
   >
   }
 </div>
