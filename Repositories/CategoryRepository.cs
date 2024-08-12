@@ -17,6 +17,25 @@ namespace financial_manager.Repositories
             _financialManagerContext = financialManagerContext;
             _categoryService = categoryService;
         }
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(int packSize = 10, int pageNumber = 0)
+        {
+            if (packSize < 0) throw new ArgumentException("The collection size can only be a non-negative integer");
+
+            if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
+
+            return await _financialManagerContext.Categories
+                .Skip(packSize * pageNumber)
+                .Take(packSize)
+                .Select(c => new Category
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    CreatedAt = c.CreatedAt,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
         public async Task CreateCategoryAsync(Category category)
         {
             if (category is null)
