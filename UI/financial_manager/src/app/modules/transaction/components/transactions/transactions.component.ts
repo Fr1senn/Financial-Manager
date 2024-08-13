@@ -3,6 +3,8 @@ import { Transaction } from '../../../../models/transaction';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionCreationComponent } from '../transaction-creation/transaction-creation.component';
 import { TransactionService } from '../../services/transaction.service';
+import { OperationResult } from '../../../../models/operation-result';
+import { HttpResponseCode } from '../../../../models/enums/http-response-code';
 
 @Component({
   selector: 'app-transactions',
@@ -11,13 +13,26 @@ import { TransactionService } from '../../services/transaction.service';
 })
 export class TransactionsComponent implements OnInit {
   public transactions: Transaction[] = [];
+  public totalTransactions: number = 0;
 
   private readonly dialog: MatDialog = inject(MatDialog);
   private readonly transactionService: TransactionService =
     inject(TransactionService);
 
   public ngOnInit(): void {
-    this.transactions = this.transactionService.getTransactions();
+    this.getTransactions(5, 0);
+    this.transactionService
+      .getTotalTransactionQuantity(1)
+      .subscribe(
+        (response: {
+          isSucess: boolean;
+          httpResponseCode: HttpResponseCode;
+          message?: string;
+          data: number;
+        }) => {
+          this.totalTransactions = response.data;
+        }
+      );
   }
 
   public createTransaction(): void {
@@ -27,5 +42,11 @@ export class TransactionsComponent implements OnInit {
       this.getTransactions();
     });
   }
+  private getTransactions(packSize: number = 10, pageNumber: number = 0): void {
+    this.transactionService
+      .getTransactions(packSize, pageNumber)
+      .subscribe((value: OperationResult<Transaction>) => {
+        this.transactions = value.data!;
+      });
   }
 }
