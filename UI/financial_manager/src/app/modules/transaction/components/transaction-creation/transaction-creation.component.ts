@@ -6,8 +6,7 @@ import { TransactionCategoryService } from '../../services/transaction-category.
 import { Transaction } from '../../../../models/transaction';
 import { TransactionService } from '../../services/transaction.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { TransactionCreationFormValidatorService } from '../../utilities/transaction-creation-form-validator.service';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-transaction-creation',
@@ -41,8 +40,6 @@ export class TransactionCreationComponent implements OnInit {
     inject(TransactionCategoryService);
   private readonly transactionService: TransactionService =
     inject(TransactionService);
-  private readonly transactionCreationFormValidatorService: TransactionCreationFormValidatorService =
-    inject(TransactionCreationFormValidatorService);
 
   public createTransaction() {
     if (this.transaction.expenseDate === undefined) {
@@ -56,8 +53,7 @@ export class TransactionCreationComponent implements OnInit {
 
   public ngOnInit(): void {
     this.getTransactionCategories();
-    this.transactionCreationForm =
-      this.transactionCreationFormValidatorService.createForm();
+    this.transactionCreationForm = this.createForm();
   }
 
   public filterTransactionCategories() {
@@ -74,5 +70,15 @@ export class TransactionCreationComponent implements OnInit {
   private getTransactionCategories(): void {
     this.transactionCategories =
       this.transactionCategoryService.getTransactionCategories();
+  private createForm(): FormGroup {
+    return new FormGroup({
+      title: new FormControl('', [Validators.required]),
+      significance: new FormControl(1, [
+        Validators.required,
+        Validators.min(1),
+      ]),
+      transactionType: new FormControl('', Validators.required),
+      expenseDate: new FormControl(),
+    });
   }
 }
