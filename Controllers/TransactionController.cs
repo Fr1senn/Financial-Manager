@@ -31,6 +31,25 @@ namespace financial_manager.Controllers
             }
         }
 
+        [HttpGet("GetTotalTransactionQuantity")]
+        public async Task<IActionResult> GetTotalTransactionQuantityAsync([FromQuery] int userId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    isSucces = true,
+                    httpResponseCode = HttpResponseCode.Ok,
+                    message = string.Empty,
+                    data = await _transactionRepository.GetTotalTransactionQuantityAsync(userId)
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteTransacionAsync([FromQuery] int transactionId)
         {
