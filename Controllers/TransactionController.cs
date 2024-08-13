@@ -31,6 +31,25 @@ namespace financial_manager.Controllers
             }
         }
 
+        [HttpGet("GetTotalTransactionQuantity")]
+        public async Task<IActionResult> GetTotalTransactionQuantityAsync([FromQuery] int userId)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    isSucces = true,
+                    httpResponseCode = HttpResponseCode.Ok,
+                    message = string.Empty,
+                    data = await _transactionRepository.GetTotalTransactionQuantityAsync(userId)
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteTransacionAsync([FromQuery] int transactionId)
         {
@@ -61,6 +80,10 @@ namespace financial_manager.Controllers
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+            }
         }
 
         [HttpPatch]
@@ -71,7 +94,7 @@ namespace financial_manager.Controllers
                 await _transactionRepository.UpdateTransactionAsync(transaction);
                 return Ok(new OperationResult(true, HttpResponseCode.Ok));
             }
-            catch(NullReferenceException ex)
+            catch (NullReferenceException ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }

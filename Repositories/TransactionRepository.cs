@@ -71,18 +71,31 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException(nameof(Transaction));
             }
 
-            Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
-
-            _financialManagerContext.Transactions.Add(new TransactionEntity
+            if (transaction.TransactionType == "expense")
             {
-                UserId = 1,
-                CategoryId = category.Id,
-                Title = transaction.Title,
-                Significance = transaction.Significance,
-                TransactionType = transaction.TransactionType,
-                CreatedAt = transaction.CreatedAt,
-                ExpenseDate = transaction.ExpenseDate ?? DateTime.Now
-            });
+                Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
+                _financialManagerContext.Transactions.Add(new TransactionEntity
+                {
+                    UserId = 1,
+                    CategoryId = category.Id,
+                    Title = transaction.Title,
+                    Significance = transaction.Significance,
+                    TransactionType = transaction.TransactionType,
+                    CreatedAt = transaction.CreatedAt,
+                    ExpenseDate = transaction.ExpenseDate ?? DateTime.Now
+                });
+            }
+            else
+            {
+                _financialManagerContext.Transactions.Add(new TransactionEntity
+                {
+                    UserId = 1,
+                    Title = transaction.Title,
+                    Significance = transaction.Significance,
+                    TransactionType = transaction.TransactionType,
+                    CreatedAt = transaction.CreatedAt,
+                });
+            }
 
             await _financialManagerContext.SaveChangesAsync();
         }
@@ -107,6 +120,11 @@ namespace financial_manager.Repositories
             existingTransaction.CategoryId = category.Id;
 
             await _financialManagerContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetTotalTransactionQuantityAsync(int userId)
+        {
+            return (await _financialManagerContext.Transactions.Where(t => t.UserId == userId).ToListAsync()).Count();
         }
     }
 }
