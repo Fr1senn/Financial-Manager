@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TransactionCreationComponent } from '../transaction-creation/transaction-creation.component';
 import { TransactionService } from '../../services/transaction.service';
 import { OperationResult } from '../../../../models/operation-result';
+import { PageEvent } from '@angular/material/paginator';
 import { HttpResponseCode } from '../../../../models/enums/http-response-code';
 
 @Component({
@@ -42,6 +43,11 @@ export class TransactionsComponent implements OnInit {
       this.getTransactions();
     });
   }
+
+  public pageHandler(event: PageEvent) {
+    this.getTransactions(5, event.pageIndex);
+  }
+
   private getTransactions(packSize: number = 10, pageNumber: number = 0): void {
     this.transactionService
       .getTransactions(packSize, pageNumber)

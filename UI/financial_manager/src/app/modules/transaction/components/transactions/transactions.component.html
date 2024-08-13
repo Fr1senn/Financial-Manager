@@ -17,8 +17,9 @@
     <div>
       <hr />
       <mat-paginator
-        [length]="transactions.length"
-        [pageSize]="7"
+        (page)="pageHandler($event)"
+        [length]="totalTransactions"
+        [pageSize]="5"
         [hidePageSize]="true"
         [showFirstLastButtons]="true"
       ></mat-paginator>
