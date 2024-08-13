@@ -2,16 +2,14 @@ import { Transaction } from './transaction';
 import { User } from './user';
 
 export class Category {
-  id: number;
+  id?: number;
   title: string;
-  createdAt: Date;
+  createdAt?: Date;
   transactions?: Transaction[];
   user?: User;
 
-  constructor(id: number, title: string, createdAt: Date = new Date()) {
-    this.id = id;
+  constructor(title: string) {
     this.title = title;
-    this.createdAt = createdAt;
     this.transactions = [];
     this.user = undefined;
   }
