@@ -61,6 +61,10 @@ namespace financial_manager.Controllers
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+            }
         }
 
         [HttpPatch]
