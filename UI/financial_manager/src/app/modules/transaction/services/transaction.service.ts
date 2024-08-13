@@ -35,5 +35,19 @@ export class TransactionService implements ITransactionService {
     );
   }
 
+  public getTotalTransactionQuantity(userId: number): Observable<{
+    isSucess: boolean;
+    httpResponseCode: HttpResponseCode;
+    message?: string;
+    data: number;
+  }> {
+    return this.httpClient.get<{
+      isSucess: boolean;
+      httpResponseCode: HttpResponseCode;
+      message?: string;
+      data: number;
+    }>(`${this.baseApiUrl}/Transaction/GetTotalTransactionQuantity`, {
+      params: { userId: userId },
+    });
   }
 }
