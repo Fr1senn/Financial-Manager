@@ -7,6 +7,7 @@ import { Transaction } from '../../../../models/transaction';
 import { TransactionService } from '../../services/transaction.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { OperationResult } from '../../../../models/operation-result';
 
 @Component({
   selector: 'app-transaction-creation',
@@ -22,6 +23,7 @@ export class TransactionCreationComponent implements OnInit {
   public selectedTransactionType: string = '';
   public seekingTransactionCategory: string = '';
   public transactionCreationForm: FormGroup | undefined;
+  public errorMessage: string = '';
 
   private readonly dialogRef = inject(
     MatDialogRef<TransactionCreationComponent>
@@ -41,6 +43,15 @@ export class TransactionCreationComponent implements OnInit {
       this.transactionCreationForm?.value.expenseDate,
       new Category('entertaiment')
     );
+    this.transactionService
+      .createTransaction(transaction)
+      .subscribe((data: OperationResult) => {
+        if (!data.isSuccess) {
+          this.errorMessage = data.message!;
+        } else {
+          this.dialogRef.close();
+        }
+      });
   }
 
   public ngOnInit(): void {
