@@ -8,4 +8,6 @@ export interface ITransactionService {
     packSize: number,
     pageNumber: number
   ): Observable<OperationResult<Transaction>>;
+
+  getTotalTransactionQuantity(userId: number): Observable<object>;
 }

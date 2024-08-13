@@ -23,9 +23,17 @@ export class TransactionService implements ITransactionService {
       { params: { packSize: packSize, pageNumber: pageNumber } }
     );
   }
+
+  public createTransaction(
+    transaction: Transaction
+  ): Observable<OperationResult> {
+    return this.httpClient.post<OperationResult>(
+      `${this.baseApiUrl}/Transaction`,
+      {
+        ...transaction,
+      }
+    );
   }
 
-  public createTransaction(transaction: Transaction): void {
-    transactions.push(transaction);
   }
 }
