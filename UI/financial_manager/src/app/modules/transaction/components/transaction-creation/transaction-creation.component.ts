@@ -34,13 +34,6 @@ export class TransactionCreationComponent implements OnInit {
     inject(TransactionService);
 
   public createTransaction() {
-    if (this.transaction.expenseDate === undefined) {
-      this.transaction.expenseDate = new Date();
-    } else {
-      this.transaction.expenseDate = new Date(this.transaction.expenseDate);
-    }
-    this.transactionService.createTransaction(this.transaction);
-    this.dialogRef.close();
     const transaction: Transaction = new Transaction(
       this.transactionCreationForm?.value.title,
       this.transactionCreationForm?.value.significance,
