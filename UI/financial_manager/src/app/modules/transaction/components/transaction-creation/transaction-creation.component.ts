@@ -21,13 +21,6 @@ export class TransactionCreationComponent implements OnInit {
   public transactionCategories: Category[] = [];
   public selectedTransactionType: string = '';
   public seekingTransactionCategory: string = '';
-  public transaction: Transaction = {
-    title: '',
-    significance: 1,
-    transactionType: '',
-    expenseDate: undefined,
-    createdAt: new Date(),
-  };
   public transactionCreationForm: FormGroup | undefined;
 
   private readonly dialogRef = inject(
@@ -49,6 +42,13 @@ export class TransactionCreationComponent implements OnInit {
     }
     this.transactionService.createTransaction(this.transaction);
     this.dialogRef.close();
+    const transaction: Transaction = new Transaction(
+      this.transactionCreationForm?.value.title,
+      this.transactionCreationForm?.value.significance,
+      this.transactionCreationForm?.value.transactionType,
+      this.transactionCreationForm?.value.expenseDate,
+      new Category('entertaiment')
+    );
   }
 
   public ngOnInit(): void {
