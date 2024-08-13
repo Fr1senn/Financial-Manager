@@ -71,7 +71,7 @@ namespace financial_manager.Controllers
                 await _transactionRepository.UpdateTransactionAsync(transaction);
                 return Ok(new OperationResult(true, HttpResponseCode.Ok));
             }
-            catch(NullReferenceException ex)
+            catch (NullReferenceException ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
