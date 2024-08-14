@@ -22,10 +22,8 @@ export class Transaction {
     this.title = title;
     this.significance = significance;
     this.transactionType = transactionType;
-    if (transactionType === 'expense') {
-      this.expenseDate = expenseDate;
-      this.category = category;
-    }
+    this.expenseDate = expenseDate;
+    this.category = category;
     this.user = user;
   }
 }
