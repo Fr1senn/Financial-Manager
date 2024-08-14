@@ -25,22 +25,22 @@
   </div>
   }
   <hr />
-  <span class="block my-[5px]"
-    >Створена:
-    {{
+  <div class="flex items-center justify-between my-[5px]">
+    <span>Створена:</span>
+    <span>{{
       transactionDateService.formatDate(
         transaction?.createdAt!.toLocaleString()
       )
-    }}
-  </span>
+    }}</span>
+  </div>
   @if (transaction?.transactionType === 'expense') {
-  <span class="block"
-    >Застосувати:
-    {{
+  <div class="flex items-center justify-between">
+    <span>Застосувати:</span>
+    <span>{{
       transactionDateService.formatDate(
         transaction?.expenseDate!.toLocaleString()
       )
-    }}</span
-  >
+    }}</span>
+  </div>
   }
 </div>

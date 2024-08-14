@@ -15,7 +15,7 @@ import { HttpResponseCode } from '../../../../models/enums/http-response-code';
 export class TransactionsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public userTranactionQuantity: number = 0;
-  public packSize: number = 7;
+  public packSize: number = 6;
 
   private readonly dialog: MatDialog = inject(MatDialog);
   private readonly transactionService: TransactionService =
