@@ -8,6 +8,9 @@ import { TransactionService } from '../../services/transaction.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OperationResult } from '../../../../models/operation-result';
+import { DateTime } from 'luxon';
+import { PageEvent } from '@angular/material/paginator';
+import { HttpResponseCode } from '../../../../models/enums/http-response-code';
 
 @Component({
   selector: 'app-transaction-creation',
@@ -20,10 +23,11 @@ export class TransactionCreationComponent implements OnInit {
     { key: 'expense', value: 'Витрата' },
   ];
   public transactionCategories: Category[] = [];
-  public selectedTransactionType: string = '';
+  public selectedTransactionType: string = 'expense';
   public seekingTransactionCategory: string = '';
   public transactionCreationForm: FormGroup | undefined;
   public errorMessage: string = '';
+  public userCategoryQuantity: number = 0;
 
   private readonly dialogRef = inject(
     MatDialogRef<TransactionCreationComponent>
@@ -40,8 +44,11 @@ export class TransactionCreationComponent implements OnInit {
       this.transactionCreationForm?.value.title,
       this.transactionCreationForm?.value.significance,
       this.transactionCreationForm?.value.transactionType,
-      this.transactionCreationForm?.value.expenseDate,
-      new Category('entertaiment')
+      this.transactionCreationForm?.value.transactionType === 'expense' &&
+      this.transactionCreationForm?.value.expenseDate === null
+        ? DateTime.fromJSDate(new Date()).toISO()
+        : this.transactionCreationForm?.value.expenseDate,
+      new Category(this.transactionCreationForm?.value.transactionCategory)
     );
     this.transactionService
       .createTransaction(transaction)
@@ -55,13 +62,25 @@ export class TransactionCreationComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.getTransactionCategories();
+    this.getCategories(4, 0);
+    this.categoryService
+      .getTotalCategoryQuantity()
+      .subscribe(
+        (response: {
+          isSucess: boolean;
+          httpResponseCode: HttpResponseCode;
+          message?: string;
+          data: number;
+        }) => {
+          this.userCategoryQuantity = response.data;
+        }
+      );
     this.transactionCreationForm = this.createForm();
   }
 
   public filterTransactionCategories() {
     if (this.seekingTransactionCategory === '') {
-      this.getTransactionCategories();
+      this.getCategories();
     }
     this.transactionCategories =
       this.transactionCategoriesFilter.filterTransactionCategory(
@@ -70,13 +89,20 @@ export class TransactionCreationComponent implements OnInit {
       );
   }
 
-  private getTransactionCategories(): void {
-    this.transactionCategories =
-      this.categoryService.getTransactionCategories();
+  public pageHandler(e: PageEvent) {
+    this.getCategories(4, e.pageIndex);
+  }
+
+  private getCategories(packSize: number = 4, pageNumber: number = 0): void {
+    this.categoryService
+      .getCategories(packSize, pageNumber)
+      .subscribe((response: OperationResult<Category>) => {
+        this.transactionCategories = response.data!;
+      });
   }
 
   private createForm(): FormGroup {
-    return new FormGroup({
+    const form = new FormGroup({
       title: new FormControl('', [Validators.required]),
       significance: new FormControl(1, [
         Validators.required,
@@ -84,6 +110,9 @@ export class TransactionCreationComponent implements OnInit {
       ]),
       transactionType: new FormControl('', Validators.required),
       expenseDate: new FormControl(),
+      transactionCategory: new FormControl(),
     });
+
+    return form;
   }
 }

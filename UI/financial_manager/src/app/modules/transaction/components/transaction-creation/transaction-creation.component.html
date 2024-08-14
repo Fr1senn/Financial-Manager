@@ -37,7 +37,7 @@
     } @if (selectedTransactionType === 'expense') {
     <mat-form-field class="w-full">
       <mat-label>Категорія транзакції</mat-label>
-      <mat-select>
+      <mat-select formControlName="transactionCategory">
         <mat-form-field class="w-full">
           <mat-label>Пошук категорії транзакції</mat-label>
           <input
@@ -62,7 +62,8 @@
         </button>
         <hr />
         <mat-paginator
-          [length]="transactionCategories.length"
+          (page)="pageHandler($event)"
+          [length]="userCategoryQuantity"
           [pageSize]="4"
           [hidePageSize]="true"
           [showFirstLastButtons]="true"
