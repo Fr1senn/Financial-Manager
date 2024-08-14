@@ -7,4 +7,6 @@ export interface ICategoryService {
     packSize: number,
     pageNumber: number
   ): Observable<OperationResult<Category>>;
+
+  getTotalCategoryQuantity(): Observable<object>;
 }

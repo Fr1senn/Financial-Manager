@@ -23,4 +23,18 @@ export class CategoryService implements ICategoryService {
       { params: { packSize: packSize, pageNumber: pageNumber } }
     );
   }
+
+  getTotalCategoryQuantity(): Observable<{
+    isSucess: boolean;
+    httpResponseCode: HttpResponseCode;
+    message?: string;
+    data: number;
+  }> {
+    return this.httpClient.get<{
+      isSucess: boolean;
+      httpResponseCode: HttpResponseCode;
+      message?: string;
+      data: number;
+    }>(`${this.baseApiUrl}/Category/GetUserCategoryQuantity`);
+  }
 }
