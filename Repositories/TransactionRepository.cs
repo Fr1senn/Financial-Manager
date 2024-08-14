@@ -122,9 +122,9 @@ namespace financial_manager.Repositories
             await _financialManagerContext.SaveChangesAsync();
         }
 
-        public async Task<int> GetTotalTransactionQuantityAsync(int userId)
+        public async Task<int> GetUserTransactionQuantityAsync(int userId)
         {
-            return (await _financialManagerContext.Transactions.Where(t => t.UserId == userId).ToListAsync()).Count();
+            return (await _financialManagerContext.Transactions.Where(t => t.UserId == userId).AsNoTracking().ToListAsync()).Count();
         }
     }
 }

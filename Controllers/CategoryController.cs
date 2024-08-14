@@ -34,6 +34,26 @@ namespace financial_manager.Controllers
             }
         }
 
+        [HttpGet("GetUserCategoryQuantity")]
+        public async Task<IActionResult> GetUserCategoryQuantityAsync()
+        {
+            try
+            {
+                int userId = 1;
+                return Ok(new
+                {
+                    isSuccess = true,
+                    httpResponseCode = HttpResponseCode.Ok,
+                    message = string.Empty,
+                    data = await _categoryRepository.GetUserCategoryQuantity(userId),
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteCategoryAsync([FromQuery] int categoryId)
         {
@@ -82,7 +102,7 @@ namespace financial_manager.Controllers
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }

@@ -23,7 +23,10 @@ namespace financial_manager.Repositories
 
             if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
 
+            int userId = 1;
+
             return await _financialManagerContext.Categories
+                .Where(c => c.UserId == userId)
                 .Skip(packSize * pageNumber)
                 .Take(packSize)
                 .Select(c => new Category
@@ -89,12 +92,17 @@ namespace financial_manager.Repositories
                 await _categoryService.GetTransactionCategoryAsync(category.Title);
                 throw new Exception("A category with this title already exists");
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 existingCategory.Title = category.Title;
-                
+
                 await _financialManagerContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<int> GetUserCategoryQuantity(int userId)
+        {
+            return (await _financialManagerContext.Categories.Where(c => c.UserId == userId).AsNoTracking().ToListAsync()).Count();
         }
     }
 }
