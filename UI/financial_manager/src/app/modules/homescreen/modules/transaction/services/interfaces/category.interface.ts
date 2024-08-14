@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { OperationResult } from '../../../../models/operation-result';
-import { Category } from '../../../../models/category';
+import { OperationResult } from '../../../../../../models/operation-result';
+import { Category } from '../../../../../../models/category';
 
 export interface ICategoryService {
   getCategories(

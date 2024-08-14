@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { Transaction } from '../../../models/transaction';
-import { enviroment } from '../../../enviroment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { OperationResult } from '../../../models/operation-result';
 import { ITransactionService } from './interfaces/transaction.interface';
-import { HttpResponseCode } from '../../../models/enums/http-response-code';
+import { enviroment } from '../../../../../enviroment';
+import { Transaction } from '../../../../../models/transaction';
+import { OperationResult } from '../../../../../models/operation-result';
+import { HttpResponseCode } from '../../../../../models/enums/http-response-code';
 
 @Injectable({
   providedIn: 'root',

@@ -7,11 +7,11 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { TransactionModule } from './modules/transaction/transaction.module';
+import { HomescreenModule } from './modules/homescreen/homescreen.module';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, TransactionModule],
+  imports: [BrowserModule, AppRoutingModule, HomescreenModule],
   providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })

@@ -1,9 +1,9 @@
 import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
-import { Transaction } from '../../../../models/transaction';
 import { ITransactionDateFormatter } from '../../utilities/interfaces/ITransactionDateFormatter';
 import { TransactionDateService } from '../../utilities/transaction-date.service';
 import { ITransactionService } from '../../services/interfaces/transaction.interface';
 import { TransactionService } from '../../services/transaction.service';
+import { Transaction } from '../../../../../../models/transaction';
 
 @Component({
   selector: 'app-transaction',

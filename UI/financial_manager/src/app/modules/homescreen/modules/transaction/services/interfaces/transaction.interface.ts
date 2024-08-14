@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
-import { OperationResult } from '../../../../models/operation-result';
-import { Transaction } from '../../../../models/transaction';
-import { HttpResponseCode } from '../../../../models/enums/http-response-code';
+import { OperationResult } from '../../../../../../models/operation-result';
+import { Transaction } from '../../../../../../models/transaction';
 
 export interface ITransactionService {
   getTransactions(

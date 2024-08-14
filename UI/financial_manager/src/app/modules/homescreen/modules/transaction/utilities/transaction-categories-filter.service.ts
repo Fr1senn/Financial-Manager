@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ITransactionCategoriesFilter } from './interfaces/ITransactionCategoriesFilter';
-import { Category } from '../../../models/category';
+import { Category } from '../../../../../models/category';
 
 @Injectable({
   providedIn: 'root',

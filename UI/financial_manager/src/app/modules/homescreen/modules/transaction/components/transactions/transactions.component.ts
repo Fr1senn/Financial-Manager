@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Transaction } from '../../../../models/transaction';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionCreationComponent } from '../transaction-creation/transaction-creation.component';
 import { TransactionService } from '../../services/transaction.service';
-import { OperationResult } from '../../../../models/operation-result';
 import { PageEvent } from '@angular/material/paginator';
-import { HttpResponseCode } from '../../../../models/enums/http-response-code';
+import { Transaction } from '../../../../../../models/transaction';
+import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
+import { OperationResult } from '../../../../../../models/operation-result';
 
 @Component({
   selector: 'app-transactions',

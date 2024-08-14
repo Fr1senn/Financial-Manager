@@ -1,16 +1,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ITransactionCategoriesFilter } from '../../utilities/interfaces/ITransactionCategoriesFilter';
 import { TransactionCategoriesFilterService } from '../../utilities/transaction-categories-filter.service';
-import { Category } from '../../../../models/category';
 import { CategoryService } from '../../services/category.service';
-import { Transaction } from '../../../../models/transaction';
 import { TransactionService } from '../../services/transaction.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { OperationResult } from '../../../../models/operation-result';
 import { DateTime } from 'luxon';
 import { PageEvent } from '@angular/material/paginator';
-import { HttpResponseCode } from '../../../../models/enums/http-response-code';
+import { Category } from '../../../../../../models/category';
+import { Transaction } from '../../../../../../models/transaction';
+import { OperationResult } from '../../../../../../models/operation-result';
+import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
 
 @Component({
   selector: 'app-transaction-creation',
