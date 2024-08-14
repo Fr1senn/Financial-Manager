@@ -15,15 +15,16 @@ import { HttpResponseCode } from '../../../../models/enums/http-response-code';
 export class TransactionsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public userTranactionQuantity: number = 0;
+  public packSize: number = 7;
 
   private readonly dialog: MatDialog = inject(MatDialog);
   private readonly transactionService: TransactionService =
     inject(TransactionService);
 
   public ngOnInit(): void {
-    this.getTransactions(5, 0);
+    this.getTransactions(this.packSize, 0);
     this.transactionService
-      .getTotalTransactionQuantity(1)
+      .getTotalTransactionQuantity()
       .subscribe(
         (response: {
           isSucess: boolean;
@@ -31,6 +32,7 @@ export class TransactionsComponent implements OnInit {
           message?: string;
           data: number;
         }) => {
+          this.userTranactionQuantity = response.data;
         }
       );
   }
@@ -44,7 +46,8 @@ export class TransactionsComponent implements OnInit {
   }
 
   public pageHandler(event: PageEvent) {
-    this.getTransactions(5, event.pageIndex);
+    this.getTransactions(this.packSize, event.pageIndex);
+  }
   }
 
   private getTransactions(packSize: number = 10, pageNumber: number = 0): void {

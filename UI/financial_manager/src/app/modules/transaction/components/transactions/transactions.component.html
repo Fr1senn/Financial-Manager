@@ -18,8 +18,8 @@
       <hr />
       <mat-paginator
         (page)="pageHandler($event)"
-        [length]="totalTransactions"
-        [pageSize]="5"
+        [length]="userTranactionQuantity"
+        [pageSize]="packSize"
         [hidePageSize]="true"
         [showFirstLastButtons]="true"
       ></mat-paginator>
