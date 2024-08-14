@@ -2,6 +2,8 @@ import { Component, inject, Input } from '@angular/core';
 import { Transaction } from '../../../../models/transaction';
 import { ITransactionDateFormatter } from '../../utilities/interfaces/ITransactionDateFormatter';
 import { TransactionDateService } from '../../utilities/transaction-date.service';
+import { ITransactionService } from '../../services/interfaces/transaction.interface';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-transaction',
@@ -14,4 +16,13 @@ export class TransactionComponent {
   public transactionDateService: ITransactionDateFormatter = inject(
     TransactionDateService
   );
+  private readonly transactionService: ITransactionService =
+    inject(TransactionService);
+
+  public deleteTransaction(): void {
+    this.transactionService
+      .deleteTransaction(this.transaction?.id!)
+      .subscribe(() => {
+      });
+  }
 }

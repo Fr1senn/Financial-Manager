@@ -1,9 +1,16 @@
 <div
   class="border border-[#005CBB] my-[10px] p-[10px] w-full overflow-hidden rounded-xl hover:bg-[#d8e4fc]/[.5] hover:cursor-pointer"
 >
-  <p class="!mb-0 w-full truncate text-ellipse max-w-full">
-    {{ transaction?.title }}
-  </p>
+  <div class="flex items-center justify-between">
+    <p class="!mb-0 w-full truncate text-ellipse max-w-full">
+      {{ transaction?.title }}
+    </p>
+    <div class="flex items-center">
+      <button (click)="deleteTransaction()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
   <hr />
   @if (transaction?.transactionType === 'income') {
   <span class="text-green-500"
