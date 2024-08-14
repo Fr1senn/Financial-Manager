@@ -11,7 +11,10 @@
     </div>
     <div class="grow mx-[10px] overflow-y-auto">
       @for (transaction of transactions; track transaction) {
-      <app-transaction [transaction]="transaction"></app-transaction>
+      <app-transaction
+        (deletedTransaction)="deleteTransaction(transaction)"
+        [transaction]="transaction"
+      ></app-transaction>
       }
     </div>
     <div>

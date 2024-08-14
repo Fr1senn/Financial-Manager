@@ -48,6 +48,11 @@ export class TransactionsComponent implements OnInit {
   public pageHandler(event: PageEvent) {
     this.getTransactions(this.packSize, event.pageIndex);
   }
+
+  public deleteTransaction(transaction: Transaction) {
+    this.transactions = this.transactions.filter(
+      (t: Transaction) => t.id !== transaction.id
+    );
   }
 
   private getTransactions(packSize: number = 10, pageNumber: number = 0): void {

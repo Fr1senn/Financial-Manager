@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { Transaction } from '../../../../models/transaction';
 import { ITransactionDateFormatter } from '../../utilities/interfaces/ITransactionDateFormatter';
 import { TransactionDateService } from '../../utilities/transaction-date.service';
@@ -12,6 +12,7 @@ import { TransactionService } from '../../services/transaction.service';
 })
 export class TransactionComponent {
   @Input() transaction: Transaction | undefined;
+  @Output() deletedTransaction = new EventEmitter();
 
   public transactionDateService: ITransactionDateFormatter = inject(
     TransactionDateService
@@ -23,6 +24,7 @@ export class TransactionComponent {
     this.transactionService
       .deleteTransaction(this.transaction?.id!)
       .subscribe(() => {
+        this.deletedTransaction.emit(this.transaction);
       });
   }
 }
