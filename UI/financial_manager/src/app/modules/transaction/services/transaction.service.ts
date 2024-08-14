@@ -35,6 +35,13 @@ export class TransactionService implements ITransactionService {
     );
   }
 
+  public deleteTransaction(transactionId: number): Observable<OperationResult> {
+    return this.httpClient.delete<OperationResult>(
+      `${this.baseApiUrl}/Transaction`,
+      { params: { transactionId: transactionId } }
+    );
+  }
+
   public getTotalTransactionQuantity(): Observable<{
     isSucess: boolean;
     httpResponseCode: HttpResponseCode;
