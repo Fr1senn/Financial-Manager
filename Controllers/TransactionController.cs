@@ -31,17 +31,18 @@ namespace financial_manager.Controllers
             }
         }
 
-        [HttpGet("GetTotalTransactionQuantity")]
-        public async Task<IActionResult> GetTotalTransactionQuantityAsync([FromQuery] int userId)
+        [HttpGet("GetUserTransactionQuantity")]
+        public async Task<IActionResult> GetUserTransactionQuantityAsync()
         {
             try
             {
+                int userId = 1;
                 return Ok(new
                 {
                     isSucces = true,
                     httpResponseCode = HttpResponseCode.Ok,
                     message = string.Empty,
-                    data = await _transactionRepository.GetTotalTransactionQuantityAsync(userId)
+                    data = await _transactionRepository.GetUserTransactionQuantityAsync(userId)
                 });
             }
             catch (Exception ex)
