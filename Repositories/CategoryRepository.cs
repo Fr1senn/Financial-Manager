@@ -96,5 +96,10 @@ namespace financial_manager.Repositories
                 await _financialManagerContext.SaveChangesAsync();
             }
         }
+
+        public async Task<int> GetUserCategoryQuantity(int userId)
+        {
+            return (await _financialManagerContext.Categories.Where(c => c.UserId == userId).AsNoTracking().ToListAsync()).Count();
+        }
     }
 }
