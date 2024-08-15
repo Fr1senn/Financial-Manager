@@ -2,10 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ICategoryService } from './interfaces/category.interface';
 import { Observable } from 'rxjs';
-import { enviroment } from '../../../../../enviroment';
-import { Category } from '../../../../../models/category';
-import { OperationResult } from '../../../../../models/operation-result';
-import { HttpResponseCode } from '../../../../../models/enums/http-response-code';
+import { enviroment } from '../../../enviroment';
+import { Category } from '../../../models/category';
+import { OperationResult } from '../../../models/operation-result';
+import { HttpResponseCode } from '../../../models/enums/http-response-code';
 
 @Injectable({
   providedIn: 'root',
