@@ -13,4 +13,6 @@ export interface ITransactionService {
   getTotalTransactionQuantity(userId: number): Observable<object>;
 
   deleteTransaction(transactionId: number): Observable<OperationResult>;
+
+  updateTransaction(transaction: Transaction): Observable<OperationResult>;
 }

@@ -55,4 +55,12 @@ export class TransactionService implements ITransactionService {
       data: number;
     }>(`${this.baseApiUrl}/Transaction/GetUserTransactionQuantity`);
   }
+
+  public updateTransaction(
+    transaction: Transaction
+  ): Observable<OperationResult> {
+    return this.httpClient.patch<OperationResult>(`${this.baseApiUrl}/Transaction`, {
+      ...transaction,
+    });
+  }
 }
