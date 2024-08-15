@@ -111,13 +111,24 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException("Transaction does not exist");
             }
 
-            Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
+            if (existingTransaction.TransactionType == "expense")
+            {
+                Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
 
-            existingTransaction.Title = transaction.Title;
-            existingTransaction.Significance = transaction.Significance;
-            existingTransaction.TransactionType = transaction.TransactionType;
-            existingTransaction.ExpenseDate = transaction.ExpenseDate ?? existingTransaction.ExpenseDate;
-            existingTransaction.CategoryId = category.Id;
+                existingTransaction.Title = transaction.Title;
+                existingTransaction.Significance = transaction.Significance;
+                existingTransaction.TransactionType = transaction.TransactionType;
+                existingTransaction.ExpenseDate = transaction.ExpenseDate ?? existingTransaction.ExpenseDate;
+                existingTransaction.CategoryId = category.Id;
+            }
+            else
+            {
+                existingTransaction.Title = transaction.Title;
+                existingTransaction.Significance = transaction.Significance;
+                existingTransaction.TransactionType = transaction.TransactionType;
+
+            }
+
 
             await _financialManagerContext.SaveChangesAsync();
         }
