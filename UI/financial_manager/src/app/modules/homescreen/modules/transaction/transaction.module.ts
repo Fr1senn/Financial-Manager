@@ -18,12 +18,14 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TransactionEditingComponent } from './components/transaction-editing/transaction-editing.component';
 
 @NgModule({
   declarations: [
     TransactionComponent,
     TransactionsComponent,
     TransactionCreationComponent,
+    TransactionEditingComponent,
   ],
   imports: [
     CommonModule,

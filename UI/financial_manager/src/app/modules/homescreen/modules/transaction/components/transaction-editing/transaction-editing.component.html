@@ -1,0 +1,66 @@
+<mat-dialog-content>
+  <div class="w-full mb-[5px] flex items-center justify-between">
+    <span class="font-medium">Редагування транзакції</span>
+    <mat-icon mat-dialog-close>clear</mat-icon>
+  </div>
+  <form [formGroup]="transactionEditingForm!" class="space-y-[5px]">
+    <mat-form-field class="w-full">
+      <mat-label>Назва категорії</mat-label>
+      <input formControlName="title" type="text" matInput />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Вартість категорії</mat-label>
+      <input formControlName="significance" type="text" matInput />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Тип транзакції</mat-label>
+      <mat-select [disabled]="true" formControlName="transactionType">
+        @for (transactionType of transactionTypes; track transactionType) {
+        <mat-option [value]="transactionType.key">{{
+          transactionType.value
+        }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if(transaction.transactionType === 'expense'){
+    <mat-form-field class="w-full">
+      <mat-label>Застосувати транзакцію</mat-label>
+      <input formControlName="expenseDate" type="datetime-local" matInput />
+      <mat-hint
+        >Залиште поле порожнім, якщо Вас влаштовує поточна дата</mat-hint
+      >
+    </mat-form-field>
+    } @if (transaction.transactionType === 'expense') {
+    <mat-form-field class="w-full">
+      <mat-label>Категорія транзакції</mat-label>
+      <mat-select formControlName="transactionCategory">
+        <mat-form-field class="w-full">
+          <mat-label>Пошук категорії транзакції</mat-label>
+          <input type="search" matInput />
+        </mat-form-field>
+        <div class="overflow-y-auto max-h-[96px] min-h-[48px]">
+          @for (category of categories; track category) {
+          <mat-option [value]="category.title">{{ category.title }}</mat-option>
+          }
+        </div>
+        <button class="w-full" mat-button>
+          <mat-icon>add</mat-icon>
+          Створити нову категорію
+        </button>
+        <hr />
+        <mat-paginator
+          (page)="pageHandler($event)"
+          [length]="userCategoryQuantity"
+          [pageSize]="4"
+          [hidePageSize]="true"
+          [showFirstLastButtons]="true"
+        ></mat-paginator>
+      </mat-select>
+    </mat-form-field>
+    }
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Скасувати</button>
+  <button (click)="updateTransaction()" mat-button>Редагувати</button>
+</mat-dialog-actions>
