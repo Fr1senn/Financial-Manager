@@ -9,4 +9,6 @@ export interface ICategoryService {
   ): Observable<OperationResult<Category>>;
 
   getTotalCategoryQuantity(): Observable<object>;
+
+  createCategory(category: Category): Observable<OperationResult>;
 }

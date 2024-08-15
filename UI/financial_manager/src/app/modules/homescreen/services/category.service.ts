@@ -37,4 +37,13 @@ export class CategoryService implements ICategoryService {
       data: number;
     }>(`${this.baseApiUrl}/Category/GetUserCategoryQuantity`);
   }
+
+  public createCategory(category: Category): Observable<OperationResult> {
+    return this.httpClient.post<OperationResult>(
+      `${this.baseApiUrl}/Category`,
+      {
+        ...category,
+      }
+    );
+  }
 }
