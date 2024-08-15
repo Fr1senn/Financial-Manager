@@ -40,8 +40,8 @@ export class TransactionsComponent implements OnInit {
   public createTransaction(): void {
     const dialogRef = this.dialog.open(TransactionCreationComponent);
 
-    dialogRef.afterClosed().subscribe((data) => {
-      this.getTransactions();
+    dialogRef.afterClosed().subscribe(() => {
+      this.getTransactions(this.packSize);
     });
   }
 
