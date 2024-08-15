@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ITransactionCategoriesFilter } from '../../utilities/interfaces/ITransactionCategoriesFilter';
 import { TransactionCategoriesFilterService } from '../../utilities/transaction-categories-filter.service';
-import { CategoryService } from '../../services/category.service';
+import { CategoryService } from '../../../../services/category.service';
 import { TransactionService } from '../../services/transaction.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateTime } from 'luxon';
 import { PageEvent } from '@angular/material/paginator';
@@ -11,6 +11,7 @@ import { Category } from '../../../../../../models/category';
 import { Transaction } from '../../../../../../models/transaction';
 import { OperationResult } from '../../../../../../models/operation-result';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
+import { CategoryCreationComponent } from '../../../category/component/category-creation/category-creation.component';
 
 @Component({
   selector: 'app-transaction-creation',
@@ -32,12 +33,27 @@ export class TransactionCreationComponent implements OnInit {
   private readonly dialogRef = inject(
     MatDialogRef<TransactionCreationComponent>
   );
+  private readonly dialogCategoryCreation = inject(MatDialog);
 
   private readonly transactionCategoriesFilter: ITransactionCategoriesFilter =
     inject(TransactionCategoriesFilterService);
   private readonly categoryService: CategoryService = inject(CategoryService);
   private readonly transactionService: TransactionService =
     inject(TransactionService);
+
+  public opetCategoryCreationDialog() {
+    const dialogRef = this.dialogCategoryCreation.open(
+      CategoryCreationComponent
+    );
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.categoryService
+        .getCategories(4, 0)
+        .subscribe((response: OperationResult<Category>) => {
+          this.transactionCategories = response.data!;
+        });
+    });
+  }
 
   public createTransaction() {
     const transaction: Transaction = new Transaction(
