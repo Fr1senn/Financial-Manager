@@ -14,7 +14,7 @@ export class CategoryService implements ICategoryService {
   private readonly baseApiUrl: string = enviroment.baseApiUrl;
   private readonly httpClient: HttpClient = inject(HttpClient);
 
-  getCategories(
+  public getCategories(
     packSize: number,
     pageNumber: number
   ): Observable<OperationResult<Category>> {
@@ -24,7 +24,7 @@ export class CategoryService implements ICategoryService {
     );
   }
 
-  getTotalCategoryQuantity(): Observable<{
+  public getTotalCategoryQuantity(): Observable<{
     isSucess: boolean;
     httpResponseCode: HttpResponseCode;
     message?: string;

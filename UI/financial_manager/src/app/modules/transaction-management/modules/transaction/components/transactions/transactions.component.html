@@ -9,7 +9,7 @@
   <div class="grow overflow-y-auto h-[150px]">
     @for (transaction of transactions; track transaction) {
     <div class="border border-[#005CBB] rounded-xl h-fit my-[10px] p-[10px]">
-      <app-transaction [transaction]="transaction"></app-transaction>
+      <app-transaction (deleteTransactionEvent)="deleteTransaction(transaction)" [transaction]="transaction"></app-transaction>
     </div>
     }
   </div>
