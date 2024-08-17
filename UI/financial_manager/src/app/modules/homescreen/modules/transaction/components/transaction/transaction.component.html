@@ -1,49 +1,51 @@
-<div
-  class="border border-[#005CBB] my-[10px] p-[10px] w-full overflow-hidden rounded-xl hover:bg-[#d8e4fc]/[.5] hover:cursor-pointer"
->
+<div class="size-full">
   <div class="flex items-center justify-between">
-    <p class="!mb-0 w-full truncate text-ellipse max-w-full">
-      {{ transaction?.title }}
-    </p>
-    <div class="flex items-center">
-      <button (click)="openTransactionEditingDialog()">
+    <span class="text-lg">{{ transaction?.title }}</span>
+    <div>
+      <button mat-icon-button (click)="openTransactionEditingDialog()">
         <mat-icon class="text-[#005CBB]">edit</mat-icon>
       </button>
-      <button (click)="deleteTransaction()">
+      <button mat-icon-button (click)="deleteTransaction()">
         <mat-icon class="text-[#005CBB]">delete</mat-icon>
       </button>
     </div>
   </div>
   <hr />
-  @if (transaction?.transactionType === 'income') {
-  <span class="text-green-500"
-    >+{{ transaction?.significance | currency }}</span
-  >
+  @if (transaction?.transactionType==='expense') {
+  <div class="flex items-center justify-between">
+    <span class="text-red-500">
+      -{{ transaction?.significance | currency }}
+    </span>
+    <span>
+      {{ transaction?.category?.title }}
+    </span>
+  </div>
   } @else {
-  <div class="flex justify-between">
-    <span class="text-red-500"
-      >-{{ transaction?.significance | currency }}</span
-    >
-    <span>{{ transaction?.category?.title }}</span>
+  <div>
+    <span class="text-green-500">
+      +{{ transaction?.significance | currency }}
+    </span>
   </div>
   }
   <hr />
-  <div class="flex items-center justify-between my-[5px]">
-    <span>Створена:</span>
-    <span>{{
-      transactionDateService.formatDate(
-        transaction?.createdAt!.toLocaleString()
-      )
-    }}</span>
+  <div class="flex flex-col">
+    <div class="flex items-center justify-between">
+      <span>Створена:</span>
+      <span>{{
+        transactionDateService.formatDate(
+          transaction?.createdAt!.toLocaleString()
+        )
+      }}</span>
+    </div>
+    @if (transaction?.transactionType === 'expense') {
+    <div class="flex items-center justify-between">
+      <span>Застосувати:</span>
+      <span>{{
+        transactionDateService.formatDate(
+          transaction?.expenseDate!.toLocaleString()
+        )
+      }}</span>
+    </div>
+    }
   </div>
-  @if (transaction?.transactionType === 'expense') {
-  <div class="flex items-center justify-between">
-    <span>Застосувати:</span>
-    <span>{{
-      transactionDateService.formatDate(
-        transaction?.expenseDate!.toLocaleString()
-      )
-    }}</span>
-  </div>
-  }
 </div>
