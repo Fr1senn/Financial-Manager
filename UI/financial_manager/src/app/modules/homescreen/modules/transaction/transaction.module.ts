@@ -6,6 +6,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { TransactionComponent } from './components/transaction/transaction.component';
 import { TransactionsComponent } from './components/transactions/transactions.component';
 import { TransactionCreationComponent } from './components/transaction-creation/transaction-creation.component';
+import { TransactionEditingComponent } from './components/transaction-editing/transaction-editing.component';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +19,6 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { TransactionEditingComponent } from './components/transaction-editing/transaction-editing.component';
 
 @NgModule({
   declarations: [

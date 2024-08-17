@@ -14,7 +14,7 @@
     </mat-form-field>
     <mat-form-field class="w-full">
       <mat-label>Тип транзакції</mat-label>
-      <mat-select [disabled]="true" formControlName="transactionType">
+      <mat-select formControlName="transactionType">
         @for (transactionType of transactionTypes; track transactionType) {
         <mat-option [value]="transactionType.key">{{
           transactionType.value

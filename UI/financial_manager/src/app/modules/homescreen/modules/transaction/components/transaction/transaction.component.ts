@@ -14,7 +14,7 @@ import { TransactionEditingComponent } from '../transaction-editing/transaction-
 })
 export class TransactionComponent {
   @Input() public transaction: Transaction | undefined;
-  @Output() public deletedTransaction = new EventEmitter();
+  @Output() public deleteTransactionEvent = new EventEmitter();
 
   public transactionDateService: ITransactionDateFormatter = inject(
     TransactionDateService
@@ -36,7 +36,7 @@ export class TransactionComponent {
     this.transactionService
       .deleteTransaction(this.transaction?.id!)
       .subscribe(() => {
-        this.deletedTransaction.emit(this.transaction);
+        this.deleteTransactionEvent.emit(this.transaction);
       });
   }
 }

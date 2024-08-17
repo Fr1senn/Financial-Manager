@@ -46,14 +46,13 @@ export class TransactionEditingComponent implements OnInit {
     this.transaction.significance =
       this.transactionEditingForm?.value.significance;
     this.transaction.expenseDate =
-      this.transactionEditingForm?.value.transactionType === 'expense' &&
-      this.transactionEditingForm?.value.expenseDate === null
+      this.transaction.transactionType === 'expense' &&
+      this.transactionEditingForm?.value.expenseDate === ''
         ? DateTime.fromJSDate(new Date()).toISO()
         : this.transactionEditingForm?.value.expenseDate;
     this.transaction.category = new Category(
       this.transactionEditingForm?.value.transactionCategory
     );
-    console.log(this.transaction.transactionType);
     this.transactionService
       .updateTransaction(this.transaction)
       .subscribe((response: OperationResult) => {
