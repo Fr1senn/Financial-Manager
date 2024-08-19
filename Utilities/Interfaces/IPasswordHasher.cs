@@ -2,5 +2,6 @@
 {
     public interface IPasswordHasher
     {
+        string HashPassword(string rawPassword, byte[] salt);
     }
 }
