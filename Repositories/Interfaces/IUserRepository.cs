@@ -9,5 +9,6 @@ namespace financial_manager.Repositories.Interfaces
     public interface IUserRepository
     {
         Task<User> GetCurrentUserCredentialsAsync();
+        Task CreateUserAsync(User user);
     }
 }

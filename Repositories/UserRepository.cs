@@ -41,5 +41,30 @@ namespace financial_manager.Repositories
 
             return currentUser;
         }
+
+        public async Task CreateUserAsync(User user)
+        {
+            string? existingEmail = await _financialManagerContext.Users
+                .Where(u => u.Email == user.Email)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
+
+            if (existingEmail != null)
+            {
+                throw new ArgumentException("A user with this e-mail address already exists");
+            }
+
+            var userSalt = _passwordHasher.GenerateSalt();
+
+            _financialManagerContext.Users.Add(new UserEntity
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                HashedPassword = _passwordHasher.HashPassword(user.RawPassword, userSalt),
+                PasswordSalt = userSalt
+            });
+
+            await _financialManagerContext.SaveChangesAsync();
+        }
     }
 }
