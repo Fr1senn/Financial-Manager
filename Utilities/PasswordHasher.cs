@@ -20,5 +20,15 @@ namespace financial_manager.Utilities
 
             return Convert.ToBase64String(hashedPassword);
         }
+
+        public byte[] GenerateSalt()
+        {
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                var salt = new byte[SaltSize];
+                rng.GetBytes(salt);
+                return salt;
+            }
+        }
     }
 }
