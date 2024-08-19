@@ -3,6 +3,8 @@ using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services;
 using financial_manager.Services.Interfaces;
+using financial_manager.Utilities;
+using financial_manager.Utilities.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,8 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
