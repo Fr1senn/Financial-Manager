@@ -30,5 +30,12 @@ namespace financial_manager.Utilities
                 return salt;
             }
         }
+
+        public bool VerifyPassword(string rawPassword, string hashedPassword, byte[] salt)
+        {
+            var hashedInputPassword = HashPassword(rawPassword, salt);
+
+            return hashedPassword == hashedInputPassword;
+        }
     }
 }

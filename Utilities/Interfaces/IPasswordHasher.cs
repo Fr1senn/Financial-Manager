@@ -5,5 +5,7 @@
         string HashPassword(string rawPassword, byte[] salt);
 
         byte[] GenerateSalt();
+
+        bool VerifyPassword(string rawPassword, string hashedPassword, byte[] salt);
     }
 }
