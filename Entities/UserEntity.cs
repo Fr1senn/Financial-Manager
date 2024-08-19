@@ -19,6 +19,8 @@ public partial class UserEntity
 
     public string HashedPassword { get; set; } = null!;
 
+    public byte[]? PasswordSalt { get; set; }
+
     public virtual ICollection<CategoryEntity> Categories { get; set; } = new List<CategoryEntity>();
 
     public virtual ICollection<TransactionEntity> Transactions { get; set; } = new List<TransactionEntity>();

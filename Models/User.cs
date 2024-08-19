@@ -13,6 +13,7 @@
 
         private short _budgetUpdateDay { get; set; }
         private string HashedPassword { get; set; } = string.Empty;
+        private byte[]? PasswordSalt { get; set; }
 
         public short BudgetUpdateDay
         {

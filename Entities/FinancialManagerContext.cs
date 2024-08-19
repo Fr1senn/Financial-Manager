@@ -117,6 +117,7 @@ public partial class FinancialManagerContext : DbContext
             entity.Property(e => e.MonthlyBudget)
                 .HasDefaultValue(0)
                 .HasColumnName("monthly_budget");
+            entity.Property(e => e.PasswordSalt).HasColumnName("password_salt");
             entity.Property(e => e.RegistrationDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("timestamp without time zone")
