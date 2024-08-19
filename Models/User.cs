@@ -5,15 +5,15 @@
         public int Id { get; init; }
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public DateTime RegistrationDate { get; private set; }
+        public DateTime RegistrationDate { get; set; }
         public int MonthlyBudget { get; set; }
+        public string RawPassword { get; set; } = string.Empty;
+        public byte[]? PasswordSalt { get; set; }
 
-        public List<Category> Categories { get; set; }
-        public List<Transaction> Transactions { get; set; }
+        public List<Category>? Categories { get; set; }
+        public List<Transaction>? Transactions { get; set; }
 
         private short _budgetUpdateDay { get; set; }
-        private string HashedPassword { get; set; } = string.Empty;
-        private byte[]? PasswordSalt { get; set; }
 
         public short BudgetUpdateDay
         {
