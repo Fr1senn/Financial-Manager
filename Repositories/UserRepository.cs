@@ -60,7 +60,7 @@ namespace financial_manager.Repositories
             {
                 FullName = user.FullName,
                 Email = user.Email,
-                HashedPassword = _passwordHasher.HashPassword(user.RawPassword, userSalt),
+                HashedPassword = _passwordHasher.HashPassword(user.Password, userSalt),
                 PasswordSalt = userSalt
             });
 

@@ -7,7 +7,7 @@
         public string Email { get; set; } = string.Empty;
         public DateTime RegistrationDate { get; set; }
         public int MonthlyBudget { get; set; }
-        public string RawPassword { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public byte[]? PasswordSalt { get; set; }
 
         public List<Category>? Categories { get; set; }

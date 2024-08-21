@@ -9,6 +9,6 @@ namespace financial_manager.Repositories.Interfaces
         Task DeleteTransactionAsync(int transactionId);
         Task CreateTransactionAsync(Transaction transaction);
         Task UpdateTransactionAsync(Transaction transaction);
-        Task<int> GetUserTransactionQuantityAsync(int userId);
+        Task<int> GetUserTransactionQuantityAsync();
     }
 }

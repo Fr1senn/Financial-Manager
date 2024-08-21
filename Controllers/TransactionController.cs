@@ -2,6 +2,7 @@
 using financial_manager.Models.Enums;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,13 +37,12 @@ namespace financial_manager.Controllers
         {
             try
             {
-                int userId = 1;
                 return Ok(new
                 {
                     isSucces = true,
                     httpResponseCode = HttpResponseCode.Ok,
                     message = string.Empty,
-                    data = await _transactionRepository.GetUserTransactionQuantityAsync(userId)
+                    data = await _transactionRepository.GetUserTransactionQuantityAsync()
                 });
             }
             catch (Exception ex)
