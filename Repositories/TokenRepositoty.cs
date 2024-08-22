@@ -41,7 +41,7 @@ namespace financial_manager.Repositories
                 throw new ArgumentNullException("Invalid refresh token");
             }
 
-            Token? authToken = await _financialManagerContext.Tokens
+            Token? token = await _financialManagerContext.Tokens
                 .Include(at => at.User)
                 .Where(at => at.RefreshToken == refreshToken)
                 .Select(at => new Token
@@ -60,12 +60,13 @@ namespace financial_manager.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-            if (authToken is null)
+            if (token is null)
             {
                 throw new NullReferenceException("Auth token does not exist");
             }
 
-            return authToken;
+            return token;
+        }
         }
     }
 }
