@@ -23,6 +23,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
 
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtUtility, JwtUtility>();
