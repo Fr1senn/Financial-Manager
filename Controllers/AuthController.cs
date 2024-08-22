@@ -38,5 +38,32 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
         }
+
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> RefreshAsync([FromBody] string refreshToken)
+        {
+            try
+            {
+                return Ok(new
+                {
+                    isSuccess = true,
+                    httpResponseCode = HttpResponseCode.Ok,
+                    message = string.Empty,
+                    data = await _authRepository.RefreshTokensAsync(refreshToken)
+                });
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+            }
+        }
     }
 }
