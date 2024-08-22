@@ -3,7 +3,9 @@ using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services;
 using financial_manager.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace financial_manager.Repositories
 {
@@ -11,11 +13,13 @@ namespace financial_manager.Repositories
     {
         private readonly FinancialManagerContext _financialManagerContext;
         private readonly ICategoryService _categoryService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public TransactionRepository(FinancialManagerContext financialManagerContext, ICategoryService categoryService)
+        public TransactionRepository(FinancialManagerContext financialManagerContext, ICategoryService categoryService, IHttpContextAccessor httpContextAccessor)
         {
             _financialManagerContext = financialManagerContext;
             _categoryService = categoryService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<Transaction>> GetTransactionsAsync(int packSize = 10, int pageNumber = 0)
@@ -24,11 +28,14 @@ namespace financial_manager.Repositories
 
             if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
 
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             return await _financialManagerContext.Transactions
                 .Include(t => t.Category)
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip(packSize * pageNumber)
                 .Take(packSize)
+                .Where(t => t.UserId == userId)
                 .Select(t => new Transaction
                 {
                     Id = t.Id,
@@ -71,12 +78,14 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException(nameof(Transaction));
             }
 
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             if (transaction.TransactionType == "expense")
             {
                 Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
                 _financialManagerContext.Transactions.Add(new TransactionEntity
                 {
-                    UserId = 1,
+                    UserId = userId,
                     CategoryId = category.Id,
                     Title = transaction.Title,
                     Significance = transaction.Significance,
@@ -89,7 +98,7 @@ namespace financial_manager.Repositories
             {
                 _financialManagerContext.Transactions.Add(new TransactionEntity
                 {
-                    UserId = 1,
+                    UserId = userId,
                     Title = transaction.Title,
                     Significance = transaction.Significance,
                     TransactionType = transaction.TransactionType,
@@ -133,8 +142,9 @@ namespace financial_manager.Repositories
             await _financialManagerContext.SaveChangesAsync();
         }
 
-        public async Task<int> GetUserTransactionQuantityAsync(int userId)
+        public async Task<int> GetUserTransactionQuantityAsync()
         {
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return (await _financialManagerContext.Transactions.Where(t => t.UserId == userId).AsNoTracking().ToListAsync()).Count();
         }
     }
