@@ -1,4 +1,5 @@
 using financial_manager.Entities;
+using financial_manager.Middlewares;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services;
@@ -41,6 +42,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<AccessTokenValidatorMiddleware>();
 
 app.UseHttpsRedirection();
 
