@@ -33,5 +33,39 @@ namespace financial_manager.Repositories
             });
             await _financialManagerContext.SaveChangesAsync();
         }
+
+        public async Task<Token> GetTokenAsync(string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                throw new ArgumentNullException("Invalid refresh token");
+            }
+
+            Token? authToken = await _financialManagerContext.Tokens
+                .Include(at => at.User)
+                .Where(at => at.RefreshToken == refreshToken)
+                .Select(at => new Token
+                {
+                    Id = at.Id,
+                    RefreshToken = at.RefreshToken,
+                    ExpirationDate = at.ExpirationDate,
+                    IsRevoked = at.IsRevoked,
+                    User = new User
+                    {
+                        Id = at.User.Id,
+                        FullName = at.User.FullName,
+                        Email = at.User.Email,
+                    }
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (authToken is null)
+            {
+                throw new NullReferenceException("Auth token does not exist");
+            }
+
+            return authToken;
+        }
     }
 }

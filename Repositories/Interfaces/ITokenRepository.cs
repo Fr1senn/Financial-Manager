@@ -6,5 +6,6 @@ namespace financial_manager.Repositories.Interfaces
     public interface ITokenRepository
     {
         Task CreateTokenAsync(Token authToken);
+        Task<Token> GetTokenAsync(string refreshToken);
     }
 }
