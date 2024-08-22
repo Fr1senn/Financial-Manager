@@ -10,5 +10,6 @@ namespace financial_manager.Repositories.Interfaces
         Task RevokeTokenAsync(string refreshToken);
         Task RevokeAllUserTokensAsync(int userId);
         Task StoreLastRevokedAccessTokenAsync(string accessToken);
+        Task<bool> IsAccessTokenBlacklistedAsync(string accessToken);
     }
 }

@@ -110,6 +110,11 @@ namespace financial_manager.Repositories
             int expiry = _configuration.GetValue<int>("Jwt:AccessTokenExpirationMinutes");
             await _localStorageService.SetAsync("last_blacklisted_token", accessToken, TimeSpan.FromMinutes(expiry));
         }
+
+        public async Task<bool> IsAccessTokenBlacklistedAsync(string accessToken)
+        {
+            var blacklistedToken = await _localStorageService.GetAsync("last_blacklisted_token");
+            return blacklistedToken == accessToken;
         }
     }
 }
