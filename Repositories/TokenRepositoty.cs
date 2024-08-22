@@ -67,6 +67,21 @@ namespace financial_manager.Repositories
 
             return token;
         }
+
+        public async Task RevokeTokenAsync(string refreshToken)
+        {
+            TokenEntity? token = await _financialManagerContext.Tokens.FirstOrDefaultAsync(at => at.RefreshToken == refreshToken);
+
+            if (token is null)
+            {
+                throw new NullReferenceException("Auth token does not exist");
+            }
+
+            token.IsRevoked = true;
+
+            _financialManagerContext.Tokens.Update(token);
+            await _financialManagerContext.SaveChangesAsync();
+        }
         }
     }
 }
