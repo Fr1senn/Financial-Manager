@@ -44,7 +44,7 @@ namespace financial_manager.Controllers
                     isSuccess = true,
                     httpResponseCode = HttpResponseCode.Ok,
                     message = string.Empty,
-                    data = await _categoryRepository.GetUserCategoryQuantity(userId),
+                    data = await _categoryRepository.GetUserCategoryQuantity(),
                 });
             }
             catch (Exception ex)

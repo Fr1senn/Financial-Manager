@@ -8,6 +8,6 @@ namespace financial_manager.Repositories.Interfaces
         Task DeleteCategoryAsync(int categoryId);
         Task CreateCategoryAsync(Category category);
         Task UpdateCategoryAsync(Category category);
-        Task<int> GetUserCategoryQuantity(int userId);
+        Task<int> GetUserCategoryQuantity();
     }
 }
