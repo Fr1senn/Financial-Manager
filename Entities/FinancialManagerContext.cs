@@ -16,6 +16,8 @@ public partial class FinancialManagerContext : DbContext
 
     public virtual DbSet<CategoryEntity> Categories { get; set; }
 
+    public virtual DbSet<TokenEntity> Tokens { get; set; }
+
     public virtual DbSet<TransactionEntity> Transactions { get; set; }
 
     public virtual DbSet<UserEntity> Users { get; set; }
@@ -53,6 +55,31 @@ public partial class FinancialManagerContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Categories)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("categories_user_id_fkey");
+        });
+
+        modelBuilder.Entity<TokenEntity>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("refresh_tokens_pkey");
+
+            entity.ToTable("tokens");
+
+            entity.HasIndex(e => e.RefreshToken, "refresh_tokens_token_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("nextval('refresh_tokens_id_seq'::regclass)")
+                .HasColumnName("id");
+            entity.Property(e => e.ExpirationDate)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("expiration_date");
+            entity.Property(e => e.IsRevoked)
+                .HasDefaultValue(false)
+                .HasColumnName("is_revoked");
+            entity.Property(e => e.RefreshToken).HasColumnName("refresh_token");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Tokens)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("refresh_tokens_user_id_fkey");
         });
 
         modelBuilder.Entity<TransactionEntity>(entity =>

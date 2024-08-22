@@ -23,5 +23,7 @@ public partial class UserEntity
 
     public virtual ICollection<CategoryEntity> Categories { get; set; } = new List<CategoryEntity>();
 
+    public virtual ICollection<TokenEntity> Tokens { get; set; } = new List<TokenEntity>();
+
     public virtual ICollection<TransactionEntity> Transactions { get; set; } = new List<TransactionEntity>();
 }
