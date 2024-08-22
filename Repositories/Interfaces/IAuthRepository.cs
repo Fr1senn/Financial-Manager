@@ -6,5 +6,6 @@ namespace financial_manager.Repositories.Interfaces
     {
         Task<TokenResponse> LoginAsync(LoginModel loginModel);
         Task<TokenResponse> RefreshTokensAsync(string refreshToken);
+        Task LogoutAsync(string refreshToken);
     }
 }

@@ -120,5 +120,21 @@ namespace financial_manager.Repositories
                 RefreshToken = newRefreshToken
             };
         }
+
+        public async Task LogoutAsync(string refreshToken)
+        {
+            Token authToken = await _tokenRepository.GetTokenAsync(refreshToken);
+
+            if (authToken is null)
+            {
+                throw new NullReferenceException("Refresh token not found");
+            }
+            else
+            {
+                await _tokenRepository.StoreLastRevokedAccessTokenAsync(_jwtUtility.GetJwt());
+
+                await _tokenRepository.RevokeAllUserTokensAsync(authToken.User!.Id);
+            }
+        }
     }
 }
