@@ -5,6 +5,7 @@ using financial_manager.Services;
 using financial_manager.Services.Interfaces;
 using financial_manager.Utilities;
 using financial_manager.Utilities.Interfaces;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<FinancialManagerContext>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(options => ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection")!));
 
 builder.Services.AddCors(options =>
 {
