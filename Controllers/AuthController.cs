@@ -65,5 +65,24 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
             }
         }
+
+        [HttpPost("Logout")]
+        [Authorize]
+        public async Task<IActionResult> LogoutAsync([FromBody] string refreshToken)
+        {
+            try
+            {
+                await _authRepository.LogoutAsync(refreshToken);
+                return Ok(new OperationResult(true, HttpResponseCode.Ok));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message));
+            }
+        }
     }
 }
