@@ -10,11 +10,18 @@ namespace financial_manager.Repositories
     public class TokenRepositoty : ITokenRepository
     {
         private readonly FinancialManagerContext _financialManagerContext;
+        private readonly ILocalStorageService _localStorageService;
+        private readonly IConfiguration _configuration;
+
         public TokenRepositoty(
             FinancialManagerContext financialManagerContext,
+            ILocalStorageService localStorageService,
+            IConfiguration configuration
             )
         {
             _financialManagerContext = financialManagerContext;
+            _localStorageService = localStorageService;
+            _configuration = configuration;
         }
 
         public async Task CreateTokenAsync(Token token)
@@ -96,6 +103,12 @@ namespace financial_manager.Repositories
 
             _financialManagerContext.Tokens.UpdateRange(tokens);
             await _financialManagerContext.SaveChangesAsync();
+        }
+
+        public async Task StoreLastRevokedAccessTokenAsync(string accessToken)
+        {
+            int expiry = _configuration.GetValue<int>("Jwt:AccessTokenExpirationMinutes");
+            await _localStorageService.SetAsync("last_blacklisted_token", accessToken, TimeSpan.FromMinutes(expiry));
         }
         }
     }
