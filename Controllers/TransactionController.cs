@@ -10,6 +10,7 @@ namespace financial_manager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepository;
