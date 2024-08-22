@@ -6,5 +6,6 @@ namespace financial_manager.Utilities.Interfaces
     {
         string GenerateAccessToken(IEnumerable<Claim> claims);
         string GenerateRefreshToken();
+        string GetJwt();
     }
 }

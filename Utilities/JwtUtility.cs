@@ -1,7 +1,9 @@
 ﻿using financial_manager.Utilities.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace financial_manager.Utilities
@@ -9,10 +11,12 @@ namespace financial_manager.Utilities
     public class JwtUtility : IJwtUtility
     {
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public JwtUtility(IConfiguration configuration)
+        public JwtUtility(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public string GenerateAccessToken(IEnumerable<Claim> claims)
@@ -36,6 +40,16 @@ namespace financial_manager.Utilities
         public string GenerateRefreshToken()
         {
             return Guid.NewGuid().ToString();
+        }
+
+        public string GetJwt()
+        {
+            string? token = _httpContextAccessor.HttpContext!.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (token is null)
+            {
+                throw new NullReferenceException("Token does not exist");
+            }
+            return token;
         }
     }
 }
