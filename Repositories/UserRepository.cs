@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using financial_manager.Entities;
 using financial_manager.Models;
@@ -14,25 +15,31 @@ namespace financial_manager.Repositories
     {
         private readonly FinancialManagerContext _financialManagerContext;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserRepository(FinancialManagerContext financialManagerContext, IPasswordHasher passwordHasher)
+        public UserRepository(FinancialManagerContext financialManagerContext, IPasswordHasher passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             _financialManagerContext = financialManagerContext;
             _passwordHasher = passwordHasher;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<User> GetCurrentUserCredentialsAsync()
         {
-            int userId = 1;
-            User? currentUser = await _financialManagerContext.Users.Where(u => u.Id == userId).Select(u => new User
-            {
-                Id = u.Id,
-                FullName = u.FullName,
-                Email = u.Email,
-                RegistrationDate = u.RegistrationDate,
-                MonthlyBudget = u.MonthlyBudget,
-                BudgetUpdateDay = u.BudgetUpdateDay
-            }).AsNoTracking().FirstOrDefaultAsync();
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            User? currentUser = await _financialManagerContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new User
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    RegistrationDate = u.RegistrationDate,
+                    MonthlyBudget = u.MonthlyBudget,
+                    BudgetUpdateDay = u.BudgetUpdateDay
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
 
             if (currentUser is null)
             {

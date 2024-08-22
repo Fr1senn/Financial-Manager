@@ -39,7 +39,6 @@ namespace financial_manager.Controllers
         {
             try
             {
-                int userId = 1;
                 return Ok(new
                 {
                     isSuccess = true,
