@@ -9,5 +9,29 @@ namespace financial_manager.Repositories
 {
     public class TokenRepositoty : ITokenRepository
     {
+        private readonly FinancialManagerContext _financialManagerContext;
+        public TokenRepositoty(
+            FinancialManagerContext financialManagerContext,
+            )
+        {
+            _financialManagerContext = financialManagerContext;
+        }
+
+        public async Task CreateTokenAsync(Token token)
+        {
+            if (string.IsNullOrEmpty(token.RefreshToken))
+            {
+                throw new ArgumentNullException(nameof(token.RefreshToken));
+            }
+
+            _financialManagerContext.Tokens.Add(new TokenEntity
+            {
+                RefreshToken = token.RefreshToken,
+                ExpirationDate = token.ExpirationDate,
+                UserId = token.User!.Id,
+                IsRevoked = token.IsRevoked
+            });
+            await _financialManagerContext.SaveChangesAsync();
+        }
     }
 }

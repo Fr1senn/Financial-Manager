@@ -5,5 +5,6 @@ namespace financial_manager.Repositories.Interfaces
 {
     public interface ITokenRepository
     {
+        Task CreateTokenAsync(Token authToken);
     }
 }
