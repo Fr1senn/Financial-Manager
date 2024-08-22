@@ -10,17 +10,23 @@ namespace financial_manager.Repositories
     public class AuthRepository : IAuthRepository
     {
         private readonly FinancialManagerContext _financialManagerContext;
+        private readonly IJwtUtility _jwtUtility;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IConfiguration _configuration;
         private readonly ITokenRepository _tokenRepository;
 
         public AuthRepository(
             FinancialManagerContext financialManagerContext,
+            IJwtUtility jwtUtility,
             IPasswordHasher passwordHasher,
+            IConfiguration configuration,
             ITokenRepository tokenRepository
             )
         {
             _financialManagerContext = financialManagerContext;
+            _jwtUtility = jwtUtility;
             _passwordHasher = passwordHasher;
+            _configuration = configuration;
             _tokenRepository = tokenRepository;
         }
 
@@ -71,6 +77,47 @@ namespace financial_manager.Repositories
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
+            };
+        }
+
+        public async Task<TokenResponse> RefreshTokensAsync(string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                throw new ArgumentException("Invalid refresh token");
+            }
+
+            Token token = await _tokenRepository.GetTokenAsync(refreshToken);
+
+            if (token.IsRevoked || token.ExpirationDate <= DateTime.Now)
+            {
+                throw new ArgumentException("The refresh token is either revoked or expired");
+            }
+
+            await _tokenRepository.RevokeTokenAsync(token.RefreshToken);
+
+            var newRefreshToken = _jwtUtility.GenerateRefreshToken();
+            var newAccessToken = _jwtUtility.GenerateAccessToken(new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, token.User!.Id.ToString())
+            });
+
+            Token newAuthToken = new Token
+            {
+                RefreshToken = newRefreshToken,
+                ExpirationDate = DateTime.Now.AddMinutes(int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!)),
+                IsRevoked = false,
+                User = token.User
+            };
+
+            await _tokenRepository.CreateTokenAsync(newAuthToken);
+
+            await _tokenRepository.StoreLastRevokedAccessTokenAsync(_jwtUtility.GetJwt());
+
+            return new TokenResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
             };
         }
     }
