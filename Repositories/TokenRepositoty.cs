@@ -82,6 +82,21 @@ namespace financial_manager.Repositories
             _financialManagerContext.Tokens.Update(token);
             await _financialManagerContext.SaveChangesAsync();
         }
+
+        public async Task RevokeAllUserTokensAsync(int userId)
+        {
+            List<TokenEntity> tokens = await _financialManagerContext.Tokens
+            .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+            .ToListAsync();
+
+            foreach (var token in tokens)
+            {
+                token.IsRevoked = true;
+            }
+
+            _financialManagerContext.Tokens.UpdateRange(tokens);
+            await _financialManagerContext.SaveChangesAsync();
+        }
         }
     }
 }
