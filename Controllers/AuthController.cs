@@ -40,17 +40,16 @@ namespace financial_manager.Controllers
         }
 
         [HttpPost("Refresh")]
-        public async Task<IActionResult> RefreshAsync([FromBody] string refreshToken)
+        public async Task<IActionResult> RefreshAsync([FromBody] Dictionary<string, string> request)
         {
             try
             {
-                return Ok(new
+                if (request.TryGetValue("refreshToken", out var refreshToken))
                 {
-                    isSuccess = true,
-                    httpResponseCode = HttpResponseCode.Ok,
-                    message = string.Empty,
-                    data = await _authRepository.RefreshTokensAsync(refreshToken)
-                });
+                    var result = await _authRepository.RefreshTokensAsync(refreshToken);
+                    return Ok(new OperationResult<TokenResponse>(true, HttpResponseCode.Ok, null, new[] { result }));
+                }
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, "Refresh token not provided"));
             }
             catch (NullReferenceException ex)
             {
