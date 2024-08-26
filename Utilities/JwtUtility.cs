@@ -47,7 +47,7 @@ namespace financial_manager.Utilities
             string? token = _httpContextAccessor.HttpContext!.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             if (token is null)
             {
-                throw new NullReferenceException("Token does not exist");
+                throw new NullReferenceException("JWT does not exist");
             }
             return token;
         }
