@@ -10,7 +10,5 @@ export class Category {
 
   constructor(title: string) {
     this.title = title;
-    this.transactions = [];
-    this.user = undefined;
   }
 }

@@ -6,6 +6,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Transaction } from '../../../../../../models/transaction';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
 import { OperationResult } from '../../../../../../models/operation-result';
+import { ITransactionService } from '../../services/interfaces/transaction.interface';
 
 @Component({
   selector: 'app-transactions',
@@ -18,23 +19,11 @@ export class TransactionsComponent implements OnInit {
   public packSize: number = 6;
 
   private readonly dialog: MatDialog = inject(MatDialog);
-  private readonly transactionService: TransactionService =
+  private readonly transactionService: ITransactionService =
     inject(TransactionService);
 
   public ngOnInit(): void {
     this.getTransactions(this.packSize, 0);
-    this.transactionService
-      .getTotalTransactionQuantity()
-      .subscribe(
-        (response: {
-          isSucess: boolean;
-          httpResponseCode: HttpResponseCode;
-          message?: string;
-          data: number;
-        }) => {
-          this.userTranactionQuantity = response.data;
-        }
-      );
   }
 
   public createTransaction(): void {
@@ -60,6 +49,22 @@ export class TransactionsComponent implements OnInit {
       .getTransactions(packSize, pageNumber)
       .subscribe((value: OperationResult<Transaction>) => {
         this.transactions = value.data!;
+        this.loadTransactionQuantity();
       });
+  }
+
+  private loadTransactionQuantity(): void {
+    this.transactionService
+      .getTotalTransactionQuantity()
+      .subscribe(
+        (response: {
+          isSucess: boolean;
+          httpResponseCode: HttpResponseCode;
+          message?: string;
+          data: number;
+        }) => {
+          this.userTranactionQuantity = response.data;
+        }
+      );
   }
 }

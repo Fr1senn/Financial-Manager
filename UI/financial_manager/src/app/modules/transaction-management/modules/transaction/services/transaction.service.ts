@@ -59,8 +59,11 @@ export class TransactionService implements ITransactionService {
   public updateTransaction(
     transaction: Transaction
   ): Observable<OperationResult> {
-    return this.httpClient.patch<OperationResult>(`${this.baseApiUrl}/Transaction`, {
-      ...transaction,
-    });
+    return this.httpClient.patch<OperationResult>(
+      `${this.baseApiUrl}/Transaction`,
+      {
+        ...transaction,
+      }
+    );
   }
 }
