@@ -47,9 +47,11 @@ export class TransactionsComponent implements OnInit {
   private getTransactions(packSize: number = 10, pageNumber: number = 0): void {
     this.transactionService
       .getTransactions(packSize, pageNumber)
-      .subscribe((value: OperationResult<Transaction>) => {
-        this.transactions = value.data!;
-        this.loadTransactionQuantity();
+      .subscribe((res) => {
+        if (res.isSuccess && res.data) {
+          this.transactions = res.data;
+          this.loadTransactionQuantity();
+        }
       });
   }
 
