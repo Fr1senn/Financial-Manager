@@ -13,6 +13,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { ITokenService } from './interfaces/token.interface';
 import { TokenService } from './token.service';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +45,13 @@ export class AuthService implements IAuthService {
           return throwError(err);
         })
       );
+  }
+
+  public register(user: User): Observable<OperationResult> {
+    return this.httpClient.post<OperationResult>(
+      `${this.baseApiUrl}/Auth/Register`,
+      { ...user }
+    );
   }
 
   public refresh(): Observable<OperationResult<TokenResponse>> {
