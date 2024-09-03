@@ -1,6 +1,6 @@
 <div class="h-full max-h-full flex flex-col justify-between">
   <div>
-    <button class="w-full" mat-button>
+    <button (click)="createTransaction()" class="w-full" mat-button>
       <mat-icon>add</mat-icon>
       <span>Створити Транзакцію</span>
     </button>
@@ -9,7 +9,10 @@
   <div class="grow overflow-y-auto h-[150px]">
     @for (transaction of transactions; track transaction) {
     <div class="border border-[#005CBB] rounded-xl h-fit my-[10px] p-[10px]">
-      <app-transaction (deleteTransactionEvent)="deleteTransaction(transaction)" [transaction]="transaction"></app-transaction>
+      <app-transaction
+        (deleteTransactionEvent)="deleteTransaction(transaction)"
+        [transaction]="transaction"
+      ></app-transaction>
     </div>
     }
   </div>

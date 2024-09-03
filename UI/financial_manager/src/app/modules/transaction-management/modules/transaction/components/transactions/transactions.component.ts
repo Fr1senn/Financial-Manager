@@ -5,7 +5,6 @@ import { TransactionService } from '../../services/transaction.service';
 import { PageEvent } from '@angular/material/paginator';
 import { Transaction } from '../../../../../../models/transaction';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
-import { OperationResult } from '../../../../../../models/operation-result';
 import { ITransactionService } from '../../services/interfaces/transaction.interface';
 
 @Component({
@@ -16,7 +15,7 @@ import { ITransactionService } from '../../services/interfaces/transaction.inter
 export class TransactionsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public userTranactionQuantity: number = 0;
-  public packSize: number = 6;
+  public packSize: number = 10;
 
   private readonly dialog: MatDialog = inject(MatDialog);
   private readonly transactionService: ITransactionService =
@@ -59,13 +58,13 @@ export class TransactionsComponent implements OnInit {
     this.transactionService
       .getTotalTransactionQuantity()
       .subscribe(
-        (response: {
+        (res: {
           isSucess: boolean;
           httpResponseCode: HttpResponseCode;
           message?: string;
           data: number;
         }) => {
-          this.userTranactionQuantity = response.data;
+          this.userTranactionQuantity = res.data;
         }
       );
   }

@@ -64,13 +64,15 @@ export class TransactionCreationComponent implements OnInit {
       this.transactionCreationForm?.value.expenseDate === null
         ? DateTime.fromJSDate(new Date()).toISO()
         : this.transactionCreationForm?.value.expenseDate,
-      new Category(this.transactionCreationForm?.value.transactionCategory)
+      this.transactionCreationForm?.value.transactionType === 'expense'
+        ? new Category(this.transactionCreationForm?.value.transactionCategory)
+        : undefined
     );
     this.transactionService
       .createTransaction(transaction)
-      .subscribe((data: OperationResult) => {
-        if (!data.isSuccess) {
-          this.errorMessage = data.message!;
+      .subscribe((res: OperationResult) => {
+        if (!res.isSuccess) {
+          this.errorMessage = res.message!;
         } else {
           this.dialogRef.close();
         }
