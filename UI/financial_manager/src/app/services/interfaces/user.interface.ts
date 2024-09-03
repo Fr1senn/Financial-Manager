@@ -4,4 +4,5 @@ import { User } from '../../models/user';
 
 export interface IUserService {
   getCurrentUserCredentials(): Observable<OperationResult<User>>;
+  updateUserCredentials(user: User): Observable<OperationResult>;
 }

@@ -18,4 +18,10 @@ export class UserService implements IUserService {
       `${this.baseApiUrl}/User`
     );
   }
+
+  public updateUserCredentials(user: User): Observable<OperationResult> {
+    return this.httpClient.patch<OperationResult>(`${this.baseApiUrl}/User`, {
+      ...user,
+    });
+  }
 }
