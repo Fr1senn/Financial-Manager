@@ -73,5 +73,24 @@ namespace financial_manager.Repositories
 
             await _financialManagerContext.SaveChangesAsync();
         }
+
+        public async Task UpdateUserCredentialsAsync(User user)
+        {
+
+
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            UserEntity? existingUser = await _financialManagerContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (existingUser == null)
+            {
+                throw new NullReferenceException("User does not exist");
+            }
+
+            existingUser.FullName = user.FullName;
+            existingUser.MonthlyBudget = user.MonthlyBudget;
+            existingUser.BudgetUpdateDay = user.BudgetUpdateDay;
+
+            await _financialManagerContext.SaveChangesAsync();
+        }
     }
 }

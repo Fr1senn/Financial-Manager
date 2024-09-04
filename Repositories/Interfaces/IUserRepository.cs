@@ -10,5 +10,6 @@ namespace financial_manager.Repositories.Interfaces
     {
         Task<User> GetCurrentUserCredentialsAsync();
         Task CreateUserAsync(User user);
+        Task UpdateUserCredentialsAsync(User user);
     }
 }
