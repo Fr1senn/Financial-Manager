@@ -12,10 +12,12 @@ namespace financial_manager.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _authRepository;
+        private readonly IUserRepository _userRepository;
 
-        public AuthController(IAuthRepository authRepository)
+        public AuthController(IAuthRepository authRepository, IUserRepository userRepository)
         {
             _authRepository = authRepository;
+            _userRepository = userRepository;
         }
 
         [HttpPost("Login")]
@@ -34,6 +36,20 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
+
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterAsync([FromBody] User user)
+        {
+            try
+            {
+                await _userRepository.CreateUserAsync(user);
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+            }
+            catch (NullReferenceException ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
             }
