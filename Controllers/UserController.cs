@@ -28,13 +28,7 @@ namespace financial_manager.Controllers
         {
             try
             {
-                return Ok(new
-                {
-                    isSuccess = true,
-                    httpResponseCode = HttpResponseCode.Ok,
-                    message = string.Empty,
-                    data = await _userRepository.GetCurrentUserCredentialsAsync()
-                });
+                return Ok(new OperationResult<User>(true, HttpResponseCode.Ok, null, [await _userRepository.GetCurrentUserCredentialsAsync()]));
             }
             catch (NullReferenceException ex)
             {

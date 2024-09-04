@@ -2,22 +2,27 @@
 using financial_manager.Models;
 using financial_manager.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace financial_manager.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly FinancialManagerContext _financialManagerContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CategoryService(FinancialManagerContext financialManagerContext)
+        public CategoryService(FinancialManagerContext financialManagerContext, IHttpContextAccessor httpContextAccessor)
         {
             _financialManagerContext = financialManagerContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<Category> GetTransactionCategoryAsync(string categoryTitle)
         {
+            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             Category? category = await _financialManagerContext.Categories
-                .Where(c => c.Title == categoryTitle && c.UserId == 1)
+                .Where(c => c.Title == categoryTitle && c.UserId == userId)
                 .Select(c => new Category
                 {
                     Id = c.Id,

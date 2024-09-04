@@ -83,12 +83,16 @@ namespace financial_manager.Controllers
 
         [HttpPost("Logout")]
         [Authorize]
-        public async Task<IActionResult> LogoutAsync([FromBody] string refreshToken)
+        public async Task<IActionResult> LogoutAsync([FromBody] Dictionary<string, string> request)
         {
             try
             {
-                await _authRepository.LogoutAsync(refreshToken);
-                return Ok(new OperationResult(true, HttpResponseCode.Ok));
+                if (request.TryGetValue("refreshToken", out var refreshToken))
+                {
+                    await _authRepository.LogoutAsync(refreshToken);
+                    return Ok(new OperationResult(true, HttpResponseCode.Ok, null));
+                }
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, "Refresh token not provided"));
             }
             catch (NullReferenceException ex)
             {

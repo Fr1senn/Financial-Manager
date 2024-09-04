@@ -32,6 +32,7 @@ namespace financial_manager.Repositories
 
             return await _financialManagerContext.Transactions
                 .Include(t => t.Category)
+                .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip(packSize * pageNumber)
                 .Take(packSize)
