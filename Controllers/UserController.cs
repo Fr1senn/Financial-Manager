@@ -45,5 +45,19 @@ namespace financial_manager.Controllers
                 return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
             }
         }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateUserCredentialsAsync([FromBody] User user)
+        {
+            try
+            {
+                await _userRepository.UpdateUserCredentialsAsync(user);
+                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+            }
+        }
     }
 }
