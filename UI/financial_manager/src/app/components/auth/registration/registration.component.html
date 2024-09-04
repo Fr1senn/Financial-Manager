@@ -1,0 +1,24 @@
+<div class="w-full border border-[#005CBB] rounded-xl p-[15px]">
+  <form [formGroup]="registrationForm!" class="flex flex-col space-y-[5px]">
+    <mat-form-field>
+      <mat-label>Повне ім'я</mat-label>
+      <input formControlName="fullName" matInput type="text" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Електронна пошта</mat-label>
+      <input formControlName="email" matInput type="email" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Пароль</mat-label>
+      <input formControlName="password" matInput type="password" />
+    </mat-form-field>
+
+    <button
+      (click)="register()"
+      mat-raised-button
+      [disabled]="registrationForm?.invalid"
+    >
+      Зареєструватись
+    </button>
+  </form>
+</div>

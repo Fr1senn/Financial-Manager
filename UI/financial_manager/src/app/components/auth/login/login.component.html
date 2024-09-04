@@ -1,0 +1,15 @@
+<div class="w-full border border-[#005CBB] rounded-xl p-[15px]">
+  <form class="flex flex-col space-y-[5px]" [formGroup]="loginForm!">
+    <mat-form-field>
+      <mat-label>Електронна пошта</mat-label>
+      <input formControlName="email" matInput type="email" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Пароль</mat-label>
+      <input formControlName="rawPassword" matInput type="password" />
+    </mat-form-field>
+    <button (click)="login()" [disabled]="loginForm?.invalid" mat-raised-button>
+      Увійти
+    </button>
+  </form>
+</div>

@@ -34,7 +34,8 @@
         >Залиште поле порожнім, якщо Вас влаштовує поточна дата</mat-hint
       >
     </mat-form-field>
-    } @if (selectedTransactionType === 'expense') {
+    } @if (selectedTransactionType === 'expense' && transactionCategories.length
+    !== 0) {
     <mat-form-field class="w-full">
       <mat-label>Категорія транзакції</mat-label>
       <mat-select formControlName="transactionCategory">
@@ -56,7 +57,11 @@
           }}</mat-option>
           }
         </div>
-        <button (click)="opetCategoryCreationDialog()" class="w-full" mat-button>
+        <button
+          (click)="opetCategoryCreationDialog()"
+          class="w-full"
+          mat-button
+        >
           <mat-icon>add</mat-icon>
           Створити нову категорію
         </button>
@@ -70,6 +75,14 @@
         ></mat-paginator>
       </mat-select>
     </mat-form-field>
+    } @if(selectedTransactionType==='expense' &&
+    transactionCategories.length===0){
+    <div class="overflow-hidden">
+      <button (click)="opetCategoryCreationDialog()" class="w-full" mat-button>
+        <mat-icon>add</mat-icon>
+        Створити нову категорію
+      </button>
+    </div>
     }
   </form>
   <span>

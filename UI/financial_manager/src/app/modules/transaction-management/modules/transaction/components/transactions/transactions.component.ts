@@ -5,7 +5,7 @@ import { TransactionService } from '../../services/transaction.service';
 import { PageEvent } from '@angular/material/paginator';
 import { Transaction } from '../../../../../../models/transaction';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
-import { OperationResult } from '../../../../../../models/operation-result';
+import { ITransactionService } from '../../services/interfaces/transaction.interface';
 
 @Component({
   selector: 'app-transactions',
@@ -15,26 +15,14 @@ import { OperationResult } from '../../../../../../models/operation-result';
 export class TransactionsComponent implements OnInit {
   public transactions: Transaction[] = [];
   public userTranactionQuantity: number = 0;
-  public packSize: number = 6;
+  public packSize: number = 10;
 
   private readonly dialog: MatDialog = inject(MatDialog);
-  private readonly transactionService: TransactionService =
+  private readonly transactionService: ITransactionService =
     inject(TransactionService);
 
   public ngOnInit(): void {
     this.getTransactions(this.packSize, 0);
-    this.transactionService
-      .getTotalTransactionQuantity()
-      .subscribe(
-        (response: {
-          isSucess: boolean;
-          httpResponseCode: HttpResponseCode;
-          message?: string;
-          data: number;
-        }) => {
-          this.userTranactionQuantity = response.data;
-        }
-      );
   }
 
   public createTransaction(): void {
@@ -58,8 +46,26 @@ export class TransactionsComponent implements OnInit {
   private getTransactions(packSize: number = 10, pageNumber: number = 0): void {
     this.transactionService
       .getTransactions(packSize, pageNumber)
-      .subscribe((value: OperationResult<Transaction>) => {
-        this.transactions = value.data!;
+      .subscribe((res) => {
+        if (res.isSuccess && res.data) {
+          this.transactions = res.data;
+          this.loadTransactionQuantity();
+        }
       });
+  }
+
+  private loadTransactionQuantity(): void {
+    this.transactionService
+      .getTotalTransactionQuantity()
+      .subscribe(
+        (res: {
+          isSucess: boolean;
+          httpResponseCode: HttpResponseCode;
+          message?: string;
+          data: number;
+        }) => {
+          this.userTranactionQuantity = res.data;
+        }
+      );
   }
 }

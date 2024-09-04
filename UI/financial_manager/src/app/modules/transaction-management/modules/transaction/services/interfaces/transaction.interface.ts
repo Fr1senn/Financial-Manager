@@ -11,7 +11,7 @@ export interface ITransactionService {
 
   createTransaction(transaction: Transaction): Observable<OperationResult>;
 
-  getTotalTransactionQuantity(userId: number): Observable<{
+  getTotalTransactionQuantity(): Observable<{
     isSucess: boolean;
     httpResponseCode: HttpResponseCode;
     message?: string;
