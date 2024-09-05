@@ -9,7 +9,7 @@ import { IAuthService } from './interfaces/auth.interface';
 import { LoginModel } from '../models/login-model';
 import { OperationResult } from '../models/operation-result';
 import { TokenResponse } from '../models/token-response';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, finalize, Observable, tap, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { ITokenService } from './interfaces/token.interface';
 import { TokenService } from './token.service';
@@ -83,10 +83,10 @@ export class AuthService implements IAuthService {
       );
   }
 
-  public logout(): void {
+  public logout(): Observable<OperationResult> {
     const refreshToken = this.tokenService.getRefreshToken();
-    this.httpClient
-      .post(
+    return this.httpClient
+      .post<OperationResult>(
         `${this.baseApiUrl}/Auth/Logout`,
         { refreshToken },
         {
@@ -95,9 +95,11 @@ export class AuthService implements IAuthService {
           }),
         }
       )
-      .subscribe(() => {
-        this.tokenService.clearTokens();
-      });
+      .pipe(
+        finalize(() => {
+          this.tokenService.clearTokens();
+        })
+      );
   }
 
   public isUserAuthenticated(): boolean {

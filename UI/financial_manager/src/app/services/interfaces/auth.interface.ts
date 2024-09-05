@@ -8,7 +8,7 @@ export interface IAuthService {
   login(loginModel: LoginModel): Observable<OperationResult<TokenResponse>>;
   register(user: User): Observable<OperationResult>;
   refresh(): Observable<OperationResult<TokenResponse>>;
-  logout(): void;
+  logout(): Observable<OperationResult>;
   isUserAuthenticated(): boolean;
   isAccessTokenExpired(): boolean;
 }

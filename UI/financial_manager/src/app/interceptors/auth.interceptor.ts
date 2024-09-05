@@ -33,7 +33,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             );
             return next(addAccessTokenToRequest(req, accessToken));
           } else {
-            authService.logout();
+            authService.logout().subscribe();
             return next(req);
           }
         }),
