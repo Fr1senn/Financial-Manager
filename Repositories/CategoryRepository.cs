@@ -42,6 +42,24 @@ namespace financial_manager.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Dictionary<string, decimal>> GetTotalCategoriesConsumption()
+        {
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+
+            Dictionary<string, decimal> totalCategoriesConsumption = await _financialManagerContext
+                .Categories.Where(c => c.UserId == userId)
+                .Select(c => new
+                {
+                    c.Title,
+                    TotalSignificance = c.Transactions.Sum(t => t.Significance),
+                })
+                .ToDictionaryAsync(x => x.Title, x => x.TotalSignificance);
+
+            return totalCategoriesConsumption;
+        }
+
         public async Task DeleteCategoryAsync(int categoryId)
         {
             if (categoryId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");

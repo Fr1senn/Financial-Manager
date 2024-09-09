@@ -27,10 +27,12 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
 
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtUtility, JwtUtility>();
+builder.Services.AddScoped<IMonthProvider, MonthProvider>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

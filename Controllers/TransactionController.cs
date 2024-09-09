@@ -49,6 +49,26 @@ namespace financial_manager.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+        [HttpGet("GetMonthlyTransactions")]
+        public async Task<IActionResult> GetMonthlyTransactions([FromQuery] int year)
+        {
+            try
+            {
+                return Ok(
+                    new
+                    {
+                        isSuccess = true,
+                        httpResponseCode = HttpResponseCode.Ok,
+                        message = string.Empty,
+                        data = await _transactionRepository.GetMonthlyTransactionsAsync(year),
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 

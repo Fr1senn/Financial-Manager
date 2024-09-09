@@ -57,6 +57,23 @@ namespace financial_manager.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Dictionary<string, TransactionSummary>> GetMonthlyTransactionsAsync(
+            int year
+        )
+        {
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+
+            var monthlyTransactions = await _transactionService.GetMonthlyTransactionsAsync(
+                year,
+                userId
+            );
+            var summaryByMonth = _monthProvider.GetMonthlyTransactionsSummary();
+            UpdateTransactionSummary(summaryByMonth, monthlyTransactions);
+            return summaryByMonth;
+        }
+
         public async Task DeleteTransactionAsync(int transactionId)
         {
             if (transactionId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");

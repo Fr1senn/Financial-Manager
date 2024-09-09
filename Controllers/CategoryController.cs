@@ -52,6 +52,26 @@ namespace financial_manager.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+        [HttpGet("GetTotalCategoriesConsumption")]
+        public async Task<IActionResult> GetTotalCategoriesConsumptionAsync()
+        {
+            try
+            {
+                return Ok(
+                    new
+                    {
+                        isSuccess = true,
+                        httpResponseCode = HttpResponseCode.Ok,
+                        message = string.Empty,
+                        data = await _categoryRepository.GetTotalCategoriesConsumption(),
+                    }
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 
