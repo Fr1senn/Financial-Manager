@@ -25,19 +25,32 @@ namespace financial_manager.Controllers
         {
             try
             {
-                return Ok(new OperationResult<TokenResponse>(true, HttpResponseCode.Ok, null, [await _authRepository.LoginAsync(loginModel)]));
+                return Ok(
+                    new OperationResult<TokenResponse>(
+                        true,
+                        HttpResponseCode.Ok,
+                        null,
+                        [await _authRepository.LoginAsync(loginModel)]
+                    )
+                );
             }
             catch (ArgumentException ex)
             {
-                return Unauthorized(new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message));
+                return Unauthorized(
+                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
+                );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 
@@ -51,7 +64,9 @@ namespace financial_manager.Controllers
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 
@@ -63,21 +78,40 @@ namespace financial_manager.Controllers
                 if (request.TryGetValue("refreshToken", out var refreshToken))
                 {
                     var result = await _authRepository.RefreshTokensAsync(refreshToken);
-                    return Ok(new OperationResult<TokenResponse>(true, HttpResponseCode.Ok, null, new[] { result }));
+                    return Ok(
+                        new OperationResult<TokenResponse>(
+                            true,
+                            HttpResponseCode.Ok,
+                            null,
+                            new[] { result }
+                        )
+                    );
                 }
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, "Refresh token not provided"));
+                return BadRequest(
+                    new OperationResult(
+                        false,
+                        HttpResponseCode.BadRequest,
+                        "Refresh token not provided"
+                    )
+                );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
+                );
             }
         }
 
@@ -92,15 +126,25 @@ namespace financial_manager.Controllers
                     await _authRepository.LogoutAsync(refreshToken);
                     return Ok(new OperationResult(true, HttpResponseCode.Ok, null));
                 }
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, "Refresh token not provided"));
+                return BadRequest(
+                    new OperationResult(
+                        false,
+                        HttpResponseCode.BadRequest,
+                        "Refresh token not provided"
+                    )
+                );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
+                );
             }
         }
     }

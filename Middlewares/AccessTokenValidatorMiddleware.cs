@@ -1,10 +1,10 @@
-﻿using financial_manager.Entities;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.CompilerServices;
+using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.CompilerServices;
 
 namespace financial_manager.Middlewares
 {
@@ -13,11 +13,15 @@ namespace financial_manager.Middlewares
         private readonly RequestDelegate _next;
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
-        public AccessTokenValidatorMiddleware(RequestDelegate next, IServiceScopeFactory serviceScopeFactory)
+        public AccessTokenValidatorMiddleware(
+            RequestDelegate next,
+            IServiceScopeFactory serviceScopeFactory
+        )
         {
             _next = next;
             _serviceScopeFactory = serviceScopeFactory;
         }
+
         public async Task InvokeAsync(HttpContext context)
         {
             if (context.Request.Path.StartsWithSegments("/api/Auth/Refresh"))
@@ -37,15 +41,21 @@ namespace financial_manager.Middlewares
                         var tokenHandler = new JwtSecurityTokenHandler();
                         var jwtToken = tokenHandler.ReadJwtToken(accessToken);
 
-                        var expClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp);
+                        var expClaim = jwtToken.Claims.FirstOrDefault(c =>
+                            c.Type == JwtRegisteredClaimNames.Exp
+                        );
                         if (expClaim == null)
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                            await context.Response.WriteAsync("Token does not contain an expiration claim");
+                            await context.Response.WriteAsync(
+                                "Token does not contain an expiration claim"
+                            );
                             return;
                         }
 
-                        var expirationTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expClaim.Value));
+                        var expirationTime = DateTimeOffset.FromUnixTimeSeconds(
+                            long.Parse(expClaim.Value)
+                        );
 
                         if (expirationTime <= DateTime.Now)
                         {
@@ -56,7 +66,8 @@ namespace financial_manager.Middlewares
 
                         using (var scope = _serviceScopeFactory.CreateScope())
                         {
-                            var tokenRepository = scope.ServiceProvider.GetRequiredService<ITokenRepository>();
+                            var tokenRepository =
+                                scope.ServiceProvider.GetRequiredService<ITokenRepository>();
 
                             if (await tokenRepository.IsAccessTokenBlacklistedAsync(accessToken))
                             {

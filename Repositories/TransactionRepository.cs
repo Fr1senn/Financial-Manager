@@ -1,11 +1,14 @@
-﻿using financial_manager.Entities;
+﻿using System.Globalization;
+using System.Security.Claims;
+using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services;
 using financial_manager.Services.Interfaces;
+using financial_manager.Utilities;
+using financial_manager.Utilities.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace financial_manager.Repositories
 {
@@ -14,24 +17,43 @@ namespace financial_manager.Repositories
         private readonly FinancialManagerContext _financialManagerContext;
         private readonly ICategoryService _categoryService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITransactionService _transactionService;
+        private readonly IMonthProvider _monthProvider;
 
-        public TransactionRepository(FinancialManagerContext financialManagerContext, ICategoryService categoryService, IHttpContextAccessor httpContextAccessor)
+        public TransactionRepository(
+            FinancialManagerContext financialManagerContext,
+            ICategoryService categoryService,
+            IHttpContextAccessor httpContextAccessor,
+            ITransactionService transactionService,
+            IMonthProvider monthProvider
+        )
         {
             _financialManagerContext = financialManagerContext;
             _categoryService = categoryService;
             _httpContextAccessor = httpContextAccessor;
+            _transactionService = transactionService;
+            _monthProvider = monthProvider;
         }
 
-        public async Task<IEnumerable<Transaction>> GetTransactionsAsync(int packSize = 10, int pageNumber = 0)
+        public async Task<IEnumerable<Transaction>> GetTransactionsAsync(
+            int packSize = 10,
+            int pageNumber = 0
+        )
         {
-            if (packSize < 0) throw new ArgumentException("The collection size can only be a non-negative integer");
+            if (packSize < 0)
+                throw new ArgumentException(
+                    "The collection size can only be a non-negative integer"
+                );
 
-            if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
+            if (pageNumber < 0)
+                throw new ArgumentException("The page number can only be a non-negative integer");
 
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
 
-            return await _financialManagerContext.Transactions
-                .Include(t => t.Category)
+            return await _financialManagerContext
+                .Transactions.Include(t => t.Category)
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.CreatedAt)
                 .Skip(packSize * pageNumber)
@@ -45,13 +67,16 @@ namespace financial_manager.Repositories
                     TransactionType = t.TransactionType,
                     CreatedAt = t.CreatedAt,
                     ExpenseDate = t.ExpenseDate,
-                    Category = t.Category != null ? new Category
-                    {
-                        Id = t.Category.Id,
-                        Title = t.Category.Title,
-                        CreatedAt = t.Category.CreatedAt,
-                        Transactions = null
-                    } : null,
+                    Category =
+                        t.Category != null
+                            ? new Category
+                            {
+                                Id = t.Category.Id,
+                                Title = t.Category.Title,
+                                CreatedAt = t.Category.CreatedAt,
+                                Transactions = null,
+                            }
+                            : null,
                 })
                 .AsNoTracking()
                 .ToListAsync();
@@ -76,9 +101,12 @@ namespace financial_manager.Repositories
 
         public async Task DeleteTransactionAsync(int transactionId)
         {
-            if (transactionId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");
+            if (transactionId < 0)
+                throw new ArgumentException("The identifier can only be a non-negative integer");
 
-            TransactionEntity? transaction = await _financialManagerContext.Transactions.Where(t => t.Id == transactionId).FirstOrDefaultAsync();
+            TransactionEntity? transaction = await _financialManagerContext
+                .Transactions.Where(t => t.Id == transactionId)
+                .FirstOrDefaultAsync();
 
             if (transaction is null)
             {
@@ -96,32 +124,40 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException(nameof(Transaction));
             }
 
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
 
             if (transaction.TransactionType == "expense")
             {
-                Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
-                _financialManagerContext.Transactions.Add(new TransactionEntity
-                {
-                    UserId = userId,
-                    CategoryId = category.Id,
-                    Title = transaction.Title,
-                    Significance = transaction.Significance,
-                    TransactionType = transaction.TransactionType,
-                    CreatedAt = transaction.CreatedAt,
-                    ExpenseDate = transaction.ExpenseDate ?? DateTime.Now
-                });
+                Category? category = await _categoryService.GetTransactionCategoryAsync(
+                    transaction.Category!.Title
+                );
+                _financialManagerContext.Transactions.Add(
+                    new TransactionEntity
+                    {
+                        UserId = userId,
+                        CategoryId = category.Id,
+                        Title = transaction.Title,
+                        Significance = transaction.Significance,
+                        TransactionType = transaction.TransactionType,
+                        CreatedAt = transaction.CreatedAt,
+                        ExpenseDate = transaction.ExpenseDate ?? DateTime.Now,
+                    }
+                );
             }
             else
             {
-                _financialManagerContext.Transactions.Add(new TransactionEntity
-                {
-                    UserId = userId,
-                    Title = transaction.Title,
-                    Significance = transaction.Significance,
-                    TransactionType = transaction.TransactionType,
-                    CreatedAt = transaction.CreatedAt,
-                });
+                _financialManagerContext.Transactions.Add(
+                    new TransactionEntity
+                    {
+                        UserId = userId,
+                        Title = transaction.Title,
+                        Significance = transaction.Significance,
+                        TransactionType = transaction.TransactionType,
+                        CreatedAt = transaction.CreatedAt,
+                    }
+                );
             }
 
             await _financialManagerContext.SaveChangesAsync();
@@ -129,8 +165,8 @@ namespace financial_manager.Repositories
 
         public async Task UpdateTransactionAsync(Transaction transaction)
         {
-            TransactionEntity? existingTransaction = await _financialManagerContext.Transactions
-                .Include(t => t.Category)
+            TransactionEntity? existingTransaction = await _financialManagerContext
+                .Transactions.Include(t => t.Category)
                 .FirstOrDefaultAsync(t => t.Id == transaction.Id);
 
             if (existingTransaction is null)
@@ -140,12 +176,15 @@ namespace financial_manager.Repositories
 
             if (existingTransaction.TransactionType == "expense")
             {
-                Category? category = await _categoryService.GetTransactionCategoryAsync(transaction.Category!.Title);
+                Category? category = await _categoryService.GetTransactionCategoryAsync(
+                    transaction.Category!.Title
+                );
 
                 existingTransaction.Title = transaction.Title;
                 existingTransaction.Significance = transaction.Significance;
                 existingTransaction.TransactionType = transaction.TransactionType;
-                existingTransaction.ExpenseDate = transaction.ExpenseDate ?? existingTransaction.ExpenseDate;
+                existingTransaction.ExpenseDate =
+                    transaction.ExpenseDate ?? existingTransaction.ExpenseDate;
                 existingTransaction.CategoryId = category.Id;
             }
             else
@@ -153,17 +192,40 @@ namespace financial_manager.Repositories
                 existingTransaction.Title = transaction.Title;
                 existingTransaction.Significance = transaction.Significance;
                 existingTransaction.TransactionType = transaction.TransactionType;
-
             }
-
 
             await _financialManagerContext.SaveChangesAsync();
         }
 
         public async Task<int> GetUserTransactionQuantityAsync()
         {
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return (await _financialManagerContext.Transactions.Where(t => t.UserId == userId).AsNoTracking().ToListAsync()).Count();
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+            return (
+                await _financialManagerContext
+                    .Transactions.Where(t => t.UserId == userId)
+                    .AsNoTracking()
+                    .ToListAsync()
+            ).Count();
+        }
+
+        private void UpdateTransactionSummary(
+            Dictionary<string, TransactionSummary> summaryByMonth,
+            IEnumerable<MonthlyTransactionData> transactions
+        )
+        {
+            foreach (var transaction in transactions)
+            {
+                if (transaction.Month.HasValue)
+                {
+                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(
+                        transaction.Month.Value
+                    );
+                    summaryByMonth[monthName].Income += transaction.Income;
+                    summaryByMonth[monthName].Expense += transaction.Expense;
+                }
+            }
         }
     }
 }

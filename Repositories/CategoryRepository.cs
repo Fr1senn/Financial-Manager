@@ -1,9 +1,9 @@
-﻿using financial_manager.Entities;
+﻿using System.Security.Claims;
+using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace financial_manager.Repositories
 {
@@ -13,23 +13,36 @@ namespace financial_manager.Repositories
         private readonly ICategoryService _categoryService;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CategoryRepository(FinancialManagerContext financialManagerContext, ICategoryService categoryService, IHttpContextAccessor httpContextAccessor)
+        public CategoryRepository(
+            FinancialManagerContext financialManagerContext,
+            ICategoryService categoryService,
+            IHttpContextAccessor httpContextAccessor
+        )
         {
             _financialManagerContext = financialManagerContext;
             _categoryService = categoryService;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IEnumerable<Category>> GetCategoriesAsync(int packSize = 10, int pageNumber = 0)
+        public async Task<IEnumerable<Category>> GetCategoriesAsync(
+            int packSize = 10,
+            int pageNumber = 0
+        )
         {
-            if (packSize < 0) throw new ArgumentException("The collection size can only be a non-negative integer");
+            if (packSize < 0)
+                throw new ArgumentException(
+                    "The collection size can only be a non-negative integer"
+                );
 
-            if (pageNumber < 0) throw new ArgumentException("The page number can only be a non-negative integer");
+            if (pageNumber < 0)
+                throw new ArgumentException("The page number can only be a non-negative integer");
 
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
 
-            return await _financialManagerContext.Categories
-                .Where(c => c.UserId == userId)
+            return await _financialManagerContext
+                .Categories.Where(c => c.UserId == userId)
                 .Skip(packSize * pageNumber)
                 .Take(packSize)
                 .Select(c => new Category
@@ -62,9 +75,12 @@ namespace financial_manager.Repositories
 
         public async Task DeleteCategoryAsync(int categoryId)
         {
-            if (categoryId < 0) throw new ArgumentException("The identifier can only be a non-negative integer");
+            if (categoryId < 0)
+                throw new ArgumentException("The identifier can only be a non-negative integer");
 
-            CategoryEntity? category = await _financialManagerContext.Categories.Where(c => c.Id == categoryId).FirstOrDefaultAsync();
+            CategoryEntity? category = await _financialManagerContext
+                .Categories.Where(c => c.Id == categoryId)
+                .FirstOrDefaultAsync();
 
             if (category is null)
             {
@@ -89,12 +105,14 @@ namespace financial_manager.Repositories
             }
             catch (NullReferenceException)
             {
-                int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-                _financialManagerContext.Categories.Add(new CategoryEntity
-                {
-                    Title = category.Title,
-                    UserId = userId
-                });
+                int userId = Convert.ToInt32(
+                    _httpContextAccessor
+                        .HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)
+                        ?.Value
+                );
+                _financialManagerContext.Categories.Add(
+                    new CategoryEntity { Title = category.Title, UserId = userId }
+                );
 
                 await _financialManagerContext.SaveChangesAsync();
             }
@@ -102,7 +120,10 @@ namespace financial_manager.Repositories
 
         public async Task UpdateCategoryAsync(Category category)
         {
-            CategoryEntity? existingCategory = await _financialManagerContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
+            CategoryEntity? existingCategory =
+                await _financialManagerContext.Categories.FirstOrDefaultAsync(c =>
+                    c.Id == category.Id
+                );
 
             if (existingCategory is null)
             {
@@ -124,8 +145,15 @@ namespace financial_manager.Repositories
 
         public async Task<int> GetUserCategoryQuantity()
         {
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return (await _financialManagerContext.Categories.Where(c => c.UserId == userId).AsNoTracking().ToListAsync()).Count();
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+            return (
+                await _financialManagerContext
+                    .Categories.Where(c => c.UserId == userId)
+                    .AsNoTracking()
+                    .ToListAsync()
+            ).Count();
         }
     }
 }

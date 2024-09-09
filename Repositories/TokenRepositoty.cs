@@ -1,9 +1,9 @@
-﻿using financial_manager.Entities;
+﻿using System.Security.Claims;
+using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace financial_manager.Repositories
 {
@@ -17,7 +17,7 @@ namespace financial_manager.Repositories
             FinancialManagerContext financialManagerContext,
             ILocalStorageService localStorageService,
             IConfiguration configuration
-            )
+        )
         {
             _financialManagerContext = financialManagerContext;
             _localStorageService = localStorageService;
@@ -31,13 +31,15 @@ namespace financial_manager.Repositories
                 throw new ArgumentNullException(nameof(token.RefreshToken));
             }
 
-            _financialManagerContext.Tokens.Add(new TokenEntity
-            {
-                RefreshToken = token.RefreshToken,
-                ExpirationDate = token.ExpirationDate,
-                UserId = token.User!.Id,
-                IsRevoked = token.IsRevoked
-            });
+            _financialManagerContext.Tokens.Add(
+                new TokenEntity
+                {
+                    RefreshToken = token.RefreshToken,
+                    ExpirationDate = token.ExpirationDate,
+                    UserId = token.User!.Id,
+                    IsRevoked = token.IsRevoked,
+                }
+            );
             await _financialManagerContext.SaveChangesAsync();
         }
 
@@ -48,8 +50,8 @@ namespace financial_manager.Repositories
                 throw new ArgumentNullException("Invalid refresh token");
             }
 
-            Token? token = await _financialManagerContext.Tokens
-                .Include(at => at.User)
+            Token? token = await _financialManagerContext
+                .Tokens.Include(at => at.User)
                 .Where(at => at.RefreshToken == refreshToken)
                 .Select(at => new Token
                 {
@@ -62,7 +64,7 @@ namespace financial_manager.Repositories
                         Id = at.User.Id,
                         FullName = at.User.FullName,
                         Email = at.User.Email,
-                    }
+                    },
                 })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -77,7 +79,9 @@ namespace financial_manager.Repositories
 
         public async Task RevokeTokenAsync(string refreshToken)
         {
-            TokenEntity? token = await _financialManagerContext.Tokens.FirstOrDefaultAsync(at => at.RefreshToken == refreshToken);
+            TokenEntity? token = await _financialManagerContext.Tokens.FirstOrDefaultAsync(at =>
+                at.RefreshToken == refreshToken
+            );
 
             if (token is null)
             {
@@ -92,9 +96,9 @@ namespace financial_manager.Repositories
 
         public async Task RevokeAllUserTokensAsync(int userId)
         {
-            List<TokenEntity> tokens = await _financialManagerContext.Tokens
-            .Where(rt => rt.UserId == userId && !rt.IsRevoked)
-            .ToListAsync();
+            List<TokenEntity> tokens = await _financialManagerContext
+                .Tokens.Where(rt => rt.UserId == userId && !rt.IsRevoked)
+                .ToListAsync();
 
             foreach (var token in tokens)
             {
@@ -108,7 +112,11 @@ namespace financial_manager.Repositories
         public async Task StoreLastRevokedAccessTokenAsync(string accessToken)
         {
             int expiry = _configuration.GetValue<int>("Jwt:AccessTokenExpirationMinutes");
-            await _localStorageService.SetAsync("last_blacklisted_token", accessToken, TimeSpan.FromMinutes(expiry));
+            await _localStorageService.SetAsync(
+                "last_blacklisted_token",
+                accessToken,
+                TimeSpan.FromMinutes(expiry)
+            );
         }
 
         public async Task<bool> IsAccessTokenBlacklistedAsync(string accessToken)

@@ -21,15 +21,27 @@ namespace financial_manager.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactionsAsync([FromQuery] int packSize = 10, [FromQuery] int pageNumber = 0)
+        public async Task<IActionResult> GetTransactionsAsync(
+            [FromQuery] int packSize = 10,
+            [FromQuery] int pageNumber = 0
+        )
         {
             try
             {
-                return Ok(new OperationResult<Transaction>(true, HttpResponseCode.Ok, null, await _transactionRepository.GetTransactionsAsync(packSize, pageNumber)));
+                return Ok(
+                    new OperationResult<Transaction>(
+                        true,
+                        HttpResponseCode.Ok,
+                        null,
+                        await _transactionRepository.GetTransactionsAsync(packSize, pageNumber)
+                    )
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 
@@ -38,17 +50,24 @@ namespace financial_manager.Controllers
         {
             try
             {
-                return Ok(new
-                {
-                    isSucces = true,
-                    httpResponseCode = HttpResponseCode.Ok,
-                    message = string.Empty,
-                    data = await _transactionRepository.GetUserTransactionQuantityAsync()
-                });
+                return Ok(
+                    new
+                    {
+                        isSucces = true,
+                        httpResponseCode = HttpResponseCode.Ok,
+                        message = string.Empty,
+                        data = await _transactionRepository.GetUserTransactionQuantityAsync(),
+                    }
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
+            }
+        }
+
         [HttpGet("GetMonthlyTransactions")]
         public async Task<IActionResult> GetMonthlyTransactions([FromQuery] int year)
         {
@@ -73,7 +92,7 @@ namespace financial_manager.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteTransacionAsync([FromQuery] int transactionId)
+        public async Task<IActionResult> DeleteTransactionAsync([FromQuery] int transactionId)
         {
             try
             {
@@ -82,11 +101,15 @@ namespace financial_manager.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
 
@@ -100,11 +123,15 @@ namespace financial_manager.Controllers
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
+                );
             }
         }
 
@@ -118,7 +145,9 @@ namespace financial_manager.Controllers
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
     }

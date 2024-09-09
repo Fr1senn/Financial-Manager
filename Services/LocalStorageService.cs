@@ -12,11 +12,11 @@ namespace financial_manager.Services
             _localStorage = connectionMultiplexer.GetDatabase();
         }
 
-
         public async Task SetAsync(string key, string value, TimeSpan expiry)
         {
             await _localStorage.StringSetAsync(key, value, expiry);
         }
+
         public async Task<string?> GetAsync(string key)
         {
             return await _localStorage.StringGetAsync(key);

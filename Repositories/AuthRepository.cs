@@ -1,9 +1,9 @@
-﻿using financial_manager.Entities;
+﻿using System.Security.Claims;
+using financial_manager.Entities;
 using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Utilities.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace financial_manager.Repositories
 {
@@ -21,7 +21,7 @@ namespace financial_manager.Repositories
             IPasswordHasher passwordHasher,
             IConfiguration configuration,
             ITokenRepository tokenRepository
-            )
+        )
         {
             _financialManagerContext = financialManagerContext;
             _jwtUtility = jwtUtility;
@@ -32,8 +32,8 @@ namespace financial_manager.Repositories
 
         public async Task<TokenResponse> LoginAsync(LoginModel loginModel)
         {
-            User? user = await _financialManagerContext.Users
-                .Where(u => u.Email == loginModel.Email)
+            User? user = await _financialManagerContext
+                .Users.Where(u => u.Email == loginModel.Email)
                 .Select(u => new User
                 {
                     Id = u.Id,
@@ -42,7 +42,7 @@ namespace financial_manager.Repositories
                     BudgetUpdateDay = u.BudgetUpdateDay,
                     MonthlyBudget = u.MonthlyBudget,
                     Password = u.HashedPassword,
-                    PasswordSalt = u.PasswordSalt
+                    PasswordSalt = u.PasswordSalt,
                 })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -52,7 +52,13 @@ namespace financial_manager.Repositories
                 throw new NullReferenceException("The user with this e-mail does not exist");
             }
 
-            if (!_passwordHasher.VerifyPassword(loginModel.RawPassword, user.Password, user.PasswordSalt!))
+            if (
+                !_passwordHasher.VerifyPassword(
+                    loginModel.RawPassword,
+                    user.Password,
+                    user.PasswordSalt!
+                )
+            )
             {
                 throw new ArgumentException("Incorrect password is specified");
             }
@@ -65,19 +71,19 @@ namespace financial_manager.Repositories
             var accessToken = _jwtUtility.GenerateAccessToken(claims);
             var refreshToken = _jwtUtility.GenerateRefreshToken();
 
-            await _tokenRepository.CreateTokenAsync(new Token
-            {
-                RefreshToken = refreshToken,
-                User = user,
-                ExpirationDate = DateTime.Now.AddDays(int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!)),
-                IsRevoked = false,
-            });
+            await _tokenRepository.CreateTokenAsync(
+                new Token
+                {
+                    RefreshToken = refreshToken,
+                    User = user,
+                    ExpirationDate = DateTime.Now.AddDays(
+                        int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!)
+                    ),
+                    IsRevoked = false,
+                }
+            );
 
-            return new TokenResponse
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+            return new TokenResponse { AccessToken = accessToken, RefreshToken = refreshToken };
         }
 
         public async Task<TokenResponse> RefreshTokensAsync(string refreshToken)
@@ -97,17 +103,18 @@ namespace financial_manager.Repositories
             await _tokenRepository.RevokeTokenAsync(token.RefreshToken);
 
             var newRefreshToken = _jwtUtility.GenerateRefreshToken();
-            var newAccessToken = _jwtUtility.GenerateAccessToken(new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, token.User!.Id.ToString())
-            });
+            var newAccessToken = _jwtUtility.GenerateAccessToken(
+                new List<Claim> { new Claim(ClaimTypes.NameIdentifier, token.User!.Id.ToString()) }
+            );
 
             Token newAuthToken = new Token
             {
                 RefreshToken = newRefreshToken,
-                ExpirationDate = DateTime.Now.AddMinutes(int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!)),
+                ExpirationDate = DateTime.Now.AddMinutes(
+                    int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"]!)
+                ),
                 IsRevoked = false,
-                User = token.User
+                User = token.User,
             };
 
             await _tokenRepository.CreateTokenAsync(newAuthToken);
@@ -117,7 +124,7 @@ namespace financial_manager.Repositories
             return new TokenResponse
             {
                 AccessToken = newAccessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
             };
         }
 

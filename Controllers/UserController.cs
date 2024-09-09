@@ -28,15 +28,26 @@ namespace financial_manager.Controllers
         {
             try
             {
-                return Ok(new OperationResult<User>(true, HttpResponseCode.Ok, null, [await _userRepository.GetCurrentUserCredentialsAsync()]));
+                return Ok(
+                    new OperationResult<User>(
+                        true,
+                        HttpResponseCode.Ok,
+                        null,
+                        [await _userRepository.GetCurrentUserCredentialsAsync()]
+                    )
+                );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
             catch (Exception ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
+                );
             }
         }
 
@@ -50,7 +61,9 @@ namespace financial_manager.Controllers
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(new OperationResult(false, HttpResponseCode.BadRequest, ex.Message));
+                return BadRequest(
+                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
+                );
             }
         }
     }

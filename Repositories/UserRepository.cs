@@ -17,7 +17,11 @@ namespace financial_manager.Repositories
         private readonly IPasswordHasher _passwordHasher;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserRepository(FinancialManagerContext financialManagerContext, IPasswordHasher passwordHasher, IHttpContextAccessor httpContextAccessor)
+        public UserRepository(
+            FinancialManagerContext financialManagerContext,
+            IPasswordHasher passwordHasher,
+            IHttpContextAccessor httpContextAccessor
+        )
         {
             _financialManagerContext = financialManagerContext;
             _passwordHasher = passwordHasher;
@@ -26,9 +30,11 @@ namespace financial_manager.Repositories
 
         public async Task<User> GetCurrentUserCredentialsAsync()
         {
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            User? currentUser = await _financialManagerContext.Users
-                .Where(u => u.Id == userId)
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+            User? currentUser = await _financialManagerContext
+                .Users.Where(u => u.Id == userId)
                 .Select(u => new User
                 {
                     Id = u.Id,
@@ -36,7 +42,7 @@ namespace financial_manager.Repositories
                     Email = u.Email,
                     RegistrationDate = u.RegistrationDate,
                     MonthlyBudget = u.MonthlyBudget,
-                    BudgetUpdateDay = u.BudgetUpdateDay
+                    BudgetUpdateDay = u.BudgetUpdateDay,
                 })
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
@@ -51,8 +57,8 @@ namespace financial_manager.Repositories
 
         public async Task CreateUserAsync(User user)
         {
-            string? existingEmail = await _financialManagerContext.Users
-                .Where(u => u.Email == user.Email)
+            string? existingEmail = await _financialManagerContext
+                .Users.Where(u => u.Email == user.Email)
                 .Select(u => u.Email)
                 .FirstOrDefaultAsync();
 
@@ -63,23 +69,27 @@ namespace financial_manager.Repositories
 
             var userSalt = _passwordHasher.GenerateSalt();
 
-            _financialManagerContext.Users.Add(new UserEntity
-            {
-                FullName = user.FullName,
-                Email = user.Email,
-                HashedPassword = _passwordHasher.HashPassword(user.Password, userSalt),
-                PasswordSalt = userSalt
-            });
+            _financialManagerContext.Users.Add(
+                new UserEntity
+                {
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    HashedPassword = _passwordHasher.HashPassword(user.Password, userSalt),
+                    PasswordSalt = userSalt,
+                }
+            );
 
             await _financialManagerContext.SaveChangesAsync();
         }
 
         public async Task UpdateUserCredentialsAsync(User user)
         {
-
-
-            int userId = Convert.ToInt32(_httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            UserEntity? existingUser = await _financialManagerContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            int userId = Convert.ToInt32(
+                _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            );
+            UserEntity? existingUser = await _financialManagerContext.Users.FirstOrDefaultAsync(u =>
+                u.Id == userId
+            );
 
             if (existingUser == null)
             {
