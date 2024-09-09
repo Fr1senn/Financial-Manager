@@ -1,5 +1,6 @@
-﻿using financial_manager.Models;
-using financial_manager.Models.Enums;
+﻿using System.Net;
+using System.Reflection.Metadata.Ecma335;
+using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,31 +27,20 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new OperationResult<TokenResponse>(
-                        true,
-                        HttpResponseCode.Ok,
-                        null,
-                        [await _authRepository.LoginAsync(loginModel)]
-                    )
+                    ApiResponse<TokenResponse>.Succeed(await _authRepository.LoginAsync(loginModel))
                 );
             }
             catch (ArgumentException ex)
             {
-                return Unauthorized(
-                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
-                );
+                return Unauthorized(ApiResponse.Fail(HttpStatusCode.Unauthorized, ex.Message));
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return Unauthorized(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return Unauthorized(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -60,13 +50,11 @@ namespace financial_manager.Controllers
             try
             {
                 await _userRepository.CreateUserAsync(user);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -78,40 +66,26 @@ namespace financial_manager.Controllers
                 if (request.TryGetValue("refreshToken", out var refreshToken))
                 {
                     var result = await _authRepository.RefreshTokensAsync(refreshToken);
-                    return Ok(
-                        new OperationResult<TokenResponse>(
-                            true,
-                            HttpResponseCode.Ok,
-                            null,
-                            new[] { result }
-                        )
-                    );
+                    return Ok(ApiResponse<TokenResponse>.Succeed(result));
                 }
                 return BadRequest(
-                    new OperationResult(
-                        false,
-                        HttpResponseCode.BadRequest,
-                        "Refresh token not provided"
-                    )
+                    ApiResponse.Fail(HttpStatusCode.BadRequest, "Refresh token not provided")
                 );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
+                ;
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
+                ;
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
+                ;
             }
         }
 
@@ -124,27 +98,21 @@ namespace financial_manager.Controllers
                 if (request.TryGetValue("refreshToken", out var refreshToken))
                 {
                     await _authRepository.LogoutAsync(refreshToken);
-                    return Ok(new OperationResult(true, HttpResponseCode.Ok, null));
+                    return Ok(ApiResponse.Succeed());
                 }
                 return BadRequest(
-                    new OperationResult(
-                        false,
-                        HttpResponseCode.BadRequest,
-                        "Refresh token not provided"
-                    )
+                    ApiResponse.Fail(HttpStatusCode.BadRequest, "Refresh token not provided")
                 );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
+                ;
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.Unauthorized, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
+                ;
             }
         }
     }

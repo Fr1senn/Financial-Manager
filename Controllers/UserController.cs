@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using financial_manager.Models;
-using financial_manager.Models.Enums;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,25 +29,18 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new OperationResult<User>(
-                        true,
-                        HttpResponseCode.Ok,
-                        null,
-                        [await _userRepository.GetCurrentUserCredentialsAsync()]
+                    ApiResponse<User>.Succeed(
+                        await _userRepository.GetCurrentUserCredentialsAsync()
                     )
                 );
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -57,13 +50,11 @@ namespace financial_manager.Controllers
             try
             {
                 await _userRepository.UpdateUserCredentialsAsync(user);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
     }

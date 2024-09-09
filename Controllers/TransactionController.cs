@@ -1,5 +1,5 @@
-﻿using financial_manager.Models;
-using financial_manager.Models.Enums;
+﻿using System.Net;
+using financial_manager.Models;
 using financial_manager.Repositories;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -29,19 +29,14 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new OperationResult<Transaction>(
-                        true,
-                        HttpResponseCode.Ok,
-                        null,
+                    ApiResponse<IEnumerable<Transaction>>.Succeed(
                         await _transactionRepository.GetTransactionsAsync(packSize, pageNumber)
                     )
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -51,20 +46,14 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new
-                    {
-                        isSucces = true,
-                        httpResponseCode = HttpResponseCode.Ok,
-                        message = string.Empty,
-                        data = await _transactionRepository.GetUserTransactionQuantityAsync(),
-                    }
+                    ApiResponse<int>.Succeed(
+                        await _transactionRepository.GetUserTransactionQuantityAsync()
+                    )
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -74,20 +63,14 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new
-                    {
-                        isSuccess = true,
-                        httpResponseCode = HttpResponseCode.Ok,
-                        message = string.Empty,
-                        data = await _transactionRepository.GetMonthlyTransactionsAsync(year),
-                    }
+                    ApiResponse<Dictionary<string, TransactionSummary>>.Succeed(
+                        await _transactionRepository.GetMonthlyTransactionsAsync(year)
+                    )
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -97,19 +80,15 @@ namespace financial_manager.Controllers
             try
             {
                 await _transactionRepository.DeleteTransactionAsync(transactionId);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -119,19 +98,15 @@ namespace financial_manager.Controllers
             try
             {
                 await _transactionRepository.CreateTransactionAsync(transaction);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.InternalServerError, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -141,13 +116,11 @@ namespace financial_manager.Controllers
             try
             {
                 await _transactionRepository.UpdateTransactionAsync(transaction);
-                return Ok(new OperationResult(true, HttpResponseCode.Ok));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
     }

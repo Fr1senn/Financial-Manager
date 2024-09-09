@@ -1,5 +1,5 @@
-﻿using financial_manager.Models;
-using financial_manager.Models.Enums;
+﻿using System.Net;
+using financial_manager.Models;
 using financial_manager.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,25 +28,18 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new OperationResult<Category>(
-                        true,
-                        HttpResponseCode.Ok,
-                        null,
+                    ApiResponse<IEnumerable<Category>>.Succeed(
                         await _categoryRepository.GetCategoriesAsync(packSize, pageNumber)
                     )
                 );
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -56,20 +49,12 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new
-                    {
-                        isSuccess = true,
-                        httpResponseCode = HttpResponseCode.Ok,
-                        message = string.Empty,
-                        data = await _categoryRepository.GetUserCategoryQuantity(),
-                    }
+                    ApiResponse<int>.Succeed(await _categoryRepository.GetUserCategoryQuantity())
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -79,20 +64,14 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    new
-                    {
-                        isSuccess = true,
-                        httpResponseCode = HttpResponseCode.Ok,
-                        message = string.Empty,
-                        data = await _categoryRepository.GetTotalCategoriesConsumption(),
-                    }
+                    ApiResponse<Dictionary<string, decimal>>.Succeed(
+                        await _categoryRepository.GetTotalCategoriesConsumption()
+                    )
                 );
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -102,19 +81,15 @@ namespace financial_manager.Controllers
             try
             {
                 await _categoryRepository.DeleteCategoryAsync(categoryId);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -124,19 +99,15 @@ namespace financial_manager.Controllers
             try
             {
                 await _categoryRepository.CreateCategoryAsync(category);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
 
@@ -146,19 +117,15 @@ namespace financial_manager.Controllers
             try
             {
                 await _categoryRepository.UpdateCategoryAsync(category);
-                return Ok(new OperationResult(true, HttpResponseCode.NoContent));
+                return Ok(ApiResponse.Succeed());
             }
             catch (NullReferenceException ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(
-                    new OperationResult(false, HttpResponseCode.BadRequest, ex.Message)
-                );
+                return BadRequest(ApiResponse.Fail(HttpStatusCode.BadRequest, ex.Message));
             }
         }
     }
