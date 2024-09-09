@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionCreationComponent } from '../transaction-creation/transaction-creation.component';
-import { TransactionService } from '../../services/transaction.service';
+import { TransactionService } from '../../../../../../services/transaction.service';
 import { PageEvent } from '@angular/material/paginator';
 import { Transaction } from '../../../../../../models/transaction';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
-import { ITransactionService } from '../../services/interfaces/transaction.interface';
+import { ITransactionService } from '../../../../../../services/interfaces/transaction.interface';
 
 @Component({
   selector: 'app-transactions',
@@ -55,17 +55,8 @@ export class TransactionsComponent implements OnInit {
   }
 
   private loadTransactionQuantity(): void {
-    this.transactionService
-      .getTotalTransactionQuantity()
-      .subscribe(
-        (res: {
-          isSucess: boolean;
-          httpResponseCode: HttpResponseCode;
-          message?: string;
-          data: number;
-        }) => {
-          this.userTranactionQuantity = res.data;
-        }
-      );
+    this.transactionService.getTotalTransactionQuantity().subscribe((res) => {
+      this.userTranactionQuantity = res.data;
+    });
   }
 }

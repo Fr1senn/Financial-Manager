@@ -1,8 +1,8 @@
 import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { ITransactionDateFormatter } from '../../utilities/interfaces/ITransactionDateFormatter';
 import { TransactionDateService } from '../../utilities/transaction-date.service';
-import { ITransactionService } from '../../services/interfaces/transaction.interface';
-import { TransactionService } from '../../services/transaction.service';
+import { ITransactionService } from '../../../../../../services/interfaces/transaction.interface';
+import { TransactionService } from '../../../../../../services/transaction.service';
 import { Transaction } from '../../../../../../models/transaction';
 import { MatDialog } from '@angular/material/dialog';
 import { TransactionEditingComponent } from '../transaction-editing/transaction-editing.component';

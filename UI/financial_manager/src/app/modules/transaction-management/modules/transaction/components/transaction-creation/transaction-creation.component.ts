@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ITransactionCategoriesFilter } from '../../utilities/interfaces/ITransactionCategoriesFilter';
 import { TransactionCategoriesFilterService } from '../../utilities/transaction-categories-filter.service';
-import { CategoryService } from '../../../../services/category.service';
-import { TransactionService } from '../../services/transaction.service';
+
+import { TransactionService } from '../../../../../../services/transaction.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateTime } from 'luxon';
@@ -12,6 +12,7 @@ import { Transaction } from '../../../../../../models/transaction';
 import { OperationResult } from '../../../../../../models/operation-result';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
 import { CategoryCreationComponent } from '../../../category/component/category-creation/category-creation.component';
+import { CategoryService } from '../../../../../../services/category.service';
 
 @Component({
   selector: 'app-transaction-creation',
@@ -75,6 +76,7 @@ export class TransactionCreationComponent implements OnInit {
           this.errorMessage = res.message!;
         } else {
           this.dialogRef.close();
+          window.location.reload();
         }
       });
   }

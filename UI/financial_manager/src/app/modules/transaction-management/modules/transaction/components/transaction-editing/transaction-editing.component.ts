@@ -2,13 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Transaction } from '../../../../../../models/transaction';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CategoryService } from '../../../../services/category.service';
+
 import { Category } from '../../../../../../models/category';
 import { OperationResult } from '../../../../../../models/operation-result';
 import { PageEvent } from '@angular/material/paginator';
 import { HttpResponseCode } from '../../../../../../models/enums/http-response-code';
-import { TransactionService } from '../../services/transaction.service';
+import { TransactionService } from '../../../../../../services/transaction.service';
 import { DateTime } from 'luxon';
+import { CategoryService } from '../../../../../../services/category.service';
 
 @Component({
   selector: 'app-transaction-editing',

@@ -2,10 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ITransactionService } from './interfaces/transaction.interface';
-import { enviroment } from '../../../../../enviroment';
-import { Transaction } from '../../../../../models/transaction';
-import { OperationResult } from '../../../../../models/operation-result';
-import { HttpResponseCode } from '../../../../../models/enums/http-response-code';
+import { enviroment } from '../enviroment';
+import { Transaction } from '../models/transaction';
+import { OperationResult } from '../models/operation-result';
+import { HttpResponseCode } from '../models/enums/http-response-code';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +24,36 @@ export class TransactionService implements ITransactionService {
     );
   }
 
+  public getTotalTransactionQuantity(): Observable<{
+    isSuccess: boolean;
+    httpResponseCode: HttpResponseCode;
+    message?: string;
+    data: number;
+  }> {
+    return this.httpClient.get<{
+      isSuccess: boolean;
+      httpResponseCode: HttpResponseCode;
+      message?: string;
+      data: number;
+    }>(`${this.baseApiUrl}/Transaction/GetUserTransactionQuantity`);
+  }
+
+  public getMonthlyTransactions(year: number): Observable<{
+    isSuccess: boolean;
+    httpResponseCode: HttpResponseCode;
+    message?: string;
+    data: { [month: string]: { income: number; expense: number } };
+  }> {
+    return this.httpClient.get<{
+      isSuccess: boolean;
+      httpResponseCode: HttpResponseCode;
+      message?: string;
+      data: { [month: string]: { income: number; expense: number } };
+    }>(`${this.baseApiUrl}/Transaction/GetMonthlyTransactions`, {
+      params: { year: year },
+    });
+  }
+
   public createTransaction(
     transaction: Transaction
   ): Observable<OperationResult> {
@@ -40,20 +70,6 @@ export class TransactionService implements ITransactionService {
       `${this.baseApiUrl}/Transaction`,
       { params: { transactionId: transactionId } }
     );
-  }
-
-  public getTotalTransactionQuantity(): Observable<{
-    isSucess: boolean;
-    httpResponseCode: HttpResponseCode;
-    message?: string;
-    data: number;
-  }> {
-    return this.httpClient.get<{
-      isSucess: boolean;
-      httpResponseCode: HttpResponseCode;
-      message?: string;
-      data: number;
-    }>(`${this.baseApiUrl}/Transaction/GetUserTransactionQuantity`);
   }
 
   public updateTransaction(
