@@ -1,7 +1,8 @@
 using System.Net;
-using financial_manager.Entities.Models;
+using financial_manager.Entities.DTOs;
 using financial_manager.Entities.Shared;
 using financial_manager.Repositories.Interfaces;
+using financialManagerAPI.Entities.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace financial_manager.Controllers
@@ -23,7 +24,7 @@ namespace financial_manager.Controllers
             try
             {
                 return Ok(
-                    ApiResponse<User>.Succeed(
+                    ApiResponse<UserDTO>.Succeed(
                         await _userRepository.GetCurrentUserCredentialsAsync()
                     )
                 );
@@ -35,11 +36,11 @@ namespace financial_manager.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> UpdateUserCredentialsAsync([FromBody] User user)
+        public async Task<IActionResult> UpdateUserCredentialsAsync([FromBody] UserRequest request)
         {
             try
             {
-                await _userRepository.UpdateUserCredentialsAsync(user);
+                await _userRepository.UpdateUserCredentialsAsync(request);
                 return Ok(ApiResponse.Succeed());
             }
             catch (Exception ex)

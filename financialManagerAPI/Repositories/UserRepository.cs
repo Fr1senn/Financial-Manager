@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using financial_manager.Entities.DTOs;
 using financial_manager.Entities.Extentions;
 using financial_manager.Entities.Models;
 using financial_manager.Repositories.Interfaces;
+using financialManagerAPI.Entities.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace financial_manager.Repositories
@@ -21,12 +23,12 @@ namespace financial_manager.Repositories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<User> GetCurrentUserCredentialsAsync()
+        public async Task<UserDTO> GetCurrentUserCredentialsAsync()
         {
             int userId = _httpContextAccessor.HttpContext!.GetUserId();
-            User? currentUser = await _financialManagerContext
+            UserDTO? currentUser = await _financialManagerContext
                 .Users.Where(u => u.Id == userId)
-                .Select(u => new User
+                .Select(u => new UserDTO
                 {
                     Id = u.Id,
                     FullName = u.FullName,
@@ -46,7 +48,7 @@ namespace financial_manager.Repositories
             return currentUser;
         }
 
-        public async Task UpdateUserCredentialsAsync(User user)
+        public async Task UpdateUserCredentialsAsync(UserRequest request)
         {
             int userId = _httpContextAccessor.HttpContext!.GetUserId();
             User? dbUser = await _financialManagerContext.Users.FirstOrDefaultAsync(u =>
@@ -58,9 +60,20 @@ namespace financial_manager.Repositories
                 throw new Exception("User does not exist");
             }
 
-            dbUser.FullName = user.FullName;
-            dbUser.MonthlyBudget = user.MonthlyBudget;
-            dbUser.BudgetUpdateDay = user.BudgetUpdateDay;
+            if (dbUser.Email != request.Email)
+            {
+                User? userWithRequestEmail = await _financialManagerContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+                if (userWithRequestEmail != null)
+                {
+                    throw new Exception("The specified email is already in use");
+                }
+            }
+
+            dbUser.FullName = request.FullName;
+            dbUser.Email = request.Email;
+            dbUser.MonthlyBudget = request.MonthlyBudget;
+            dbUser.BudgetUpdateDay = request.BudgetUpdateDay;
 
             await _financialManagerContext.SaveChangesAsync();
         }

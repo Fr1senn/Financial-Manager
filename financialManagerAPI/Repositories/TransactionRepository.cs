@@ -106,7 +106,7 @@ namespace financial_manager.Repositories
                         Significance = request.Significance,
                         TransactionType = request.TransactionType,
                         CreatedAt = request.CreatedAt ?? DateTime.Now,
-                        ExpenseDate = request.ExpenseDate ?? DateTime.Now,
+                        ExpenseDate = (request.ExpenseDate ?? DateTime.Now).ToLocalTime(),
                     }
                 );
             }

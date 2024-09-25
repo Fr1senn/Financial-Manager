@@ -41,7 +41,7 @@ namespace financial_manager.Repositories
         {
             if (string.IsNullOrEmpty(refreshToken))
             {
-                throw new ArgumentNullException("Invalid refresh token");
+                throw new Exception("Invalid refresh token");
             }
 
             Token? token = await _financialManagerContext.Tokens
@@ -52,7 +52,12 @@ namespace financial_manager.Repositories
 
             if (token is null)
             {
-                throw new NullReferenceException("Auth token does not exist");
+                throw new Exception("Auth token does not exist");
+            }
+
+            if (token.IsRevoked)
+            {
+                throw new Exception("Token already revoked");
             }
 
             return token;
