@@ -1,0 +1,45 @@
+<div class="flex flex-col space-y-[10px]">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-[5px]">
+      <mat-icon class="text-[#ba005c]">person</mat-icon>
+      <span class="text-xl">{{ userCredentials()?.fullName }}</span>
+    </div>
+    <button mat-icon-button (click)="openUserCredentialsEditing()">
+      <mat-icon class="text-[#ba005c]">edit</mat-icon>
+    </button>
+  </div>
+  <hr />
+  <div
+    class="flex items-center space-x-[px] hover:cursor-pointer"
+    [routerLink]="['transactions']"
+    [routerLinkActive]="['border', 'border-[#ba005c]', 'rounded-lg']"
+  >
+    <mat-icon class="text-[#ba005c]">home</mat-icon>
+    <span class="text-xl">Головна Сторінка</span>
+  </div>
+  <hr />
+  <div
+    class="flex items-center space-x-[5px] hover:cursor-pointer"
+    [routerLink]="['history']"
+    [routerLinkActive]="['border', 'border-[#ba005c]', 'rounded-lg']"
+  >
+    <mat-icon class="text-[#ba005c]">history</mat-icon>
+    <span class="text-xl">Історія Транзакцій</span>
+  </div>
+  <hr />
+  <div
+    class="flex items-center space-x-[5px] hover:cursor-pointer"
+    [routerLink]="['history']"
+    [routerLinkActive]="['border', 'border-[#ba005c]', 'rounded-lg']"
+  >
+    <mat-icon class="text-[#ba005c]">bar_chart</mat-icon>
+    <span class="text-xl">Статистика</span>
+  </div>
+  <hr />
+  <div>
+    <button mat-raised-button class="w-full" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Вийти
+    </button>
+  </div>
+</div>

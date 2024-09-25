@@ -1,0 +1,9 @@
+@if(loadingService.isLoading()) {
+<app-loading></app-loading>
+} @else {
+<div class="h-screen p-[15px]">
+  <div class="rounded-lg size-full overflow-hidden">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+}

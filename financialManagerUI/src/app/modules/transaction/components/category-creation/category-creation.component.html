@@ -1,0 +1,33 @@
+<mat-dialog-content class="space-y-[10px]">
+  <div class="w-full flex items-center justify-between">
+    <span class="text-lg">Створення категорії</span>
+    <button mat-icon-button (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div>
+    @if (errorMessage) {
+    <mat-error class="text-center">{{ errorMessage }}</mat-error>
+    }
+    <form [formGroup]="categoryCreationForm!">
+      <mat-form-field class="w-full">
+        <mat-label>Назва</mat-label>
+        <input type="text" matInput formControlName="title" />
+        @if(categoryCreationForm?.get('title')?.touched &&
+        categoryCreationForm?.get('title')?.invalid) {
+        <mat-error>Мінімальна довжина назви - 5 символів</mat-error>
+        }
+      </mat-form-field>
+    </form>
+  </div>
+  <mat-dialog-actions>
+    <button mat-raised-button (click)="closeDialog()">Скасувати</button>
+    <button
+      mat-raised-button
+      [disabled]="categoryCreationForm?.invalid"
+      (click)="createCategory()"
+    >
+      Створити
+    </button>
+  </mat-dialog-actions>
+</mat-dialog-content>

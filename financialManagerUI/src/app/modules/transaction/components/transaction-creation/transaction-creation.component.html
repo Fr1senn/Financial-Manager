@@ -1,0 +1,85 @@
+<mat-dialog-content class="space-y-[10px] h-fit overflow-hidden">
+  <div class="flex items-center justify-between">
+    <span class="text-lg">Створення нової транзакції</span>
+    <button mat-icon-button (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div>
+    <form [formGroup]="transactionCreationForm!" class="space-y-[5px]">
+      <mat-form-field class="w-full">
+        <mat-label>Назва</mat-label>
+        <input type="text" matInput formControlName="title" />
+        @if(transactionCreationForm?.get('title')?.touched &&
+        transactionCreationForm?.get('title')?.invalid) {
+        <mat-error>Мінімальна довжина назви - 5 символів</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Вартість</mat-label>
+        <input
+          type="number"
+          matInput
+          formControlName="significance"
+          min="1"
+          max="99999.99"
+        />
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Тип транзакції</mat-label>
+        <mat-select formControlName="transactionType">
+          @for (transactionType of transactionTypes; track $index) {
+          <mat-option [value]="transactionType.value">{{
+            transactionType.displayedValue
+          }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (transactionCreationForm?.get('transactionType')?.value ==='expense')
+      {
+      <mat-form-field class="w-full">
+        <mat-label>Дата застосування витрати</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="expenseDate"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      @if(categories()?.length !== 0) {
+      <mat-form-field class="w-full">
+        <mat-label>Категорія</mat-label>
+        <mat-select formControlName="categoryTitle">
+          @for (category of categories(); track $index) {
+          <mat-option [value]="category.title">{{ category.title }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      } }
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="!flex !items-center !justify-between">
+  <div>
+    @if(transactionCreationForm?.get('transactionType')?.value === 'expense'){
+    <button mat-raised-button (click)="openCategoryCreationDialog()">
+      <mat-icon>add</mat-icon>
+      Створити категорію
+    </button>
+    }
+  </div>
+  <div>
+    <button mat-raised-button (click)="closeDialog()">Скасувати</button>
+    <button
+      mat-raised-button
+      (click)="createTransaction()"
+      [disabled]="transactionCreationForm?.invalid"
+    >
+      Створити
+    </button>
+  </div>
+</mat-dialog-actions>

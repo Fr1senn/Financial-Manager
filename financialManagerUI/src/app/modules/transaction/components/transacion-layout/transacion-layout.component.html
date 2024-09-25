@@ -1,0 +1,28 @@
+<div class="size-full flex space-x-[15px]">
+  <div class="w-[75%] h-full flex flex-col justify-between">
+    <app-transactions
+      class="grid grid-cols-3 auto-rows-auto gap-[15px] max-h-full overflow-y-auto"
+    ></app-transactions>
+    <div>
+      <hr />
+      <div class="flex justify-between items-center">
+        <div>
+          <button mat-raised-button (click)="openTransactionCreationDialog()">
+            <mat-icon>add</mat-icon>
+            Створити нову транзакцію
+          </button>
+        </div>
+        <div class="w-1/3">
+          <mat-paginator
+            class="!bg-transparent"
+            [length]="100"
+            [pageSize]="10"
+            [showFirstLastButtons]="true"
+            [hidePageSize]="true"
+          ></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border border-red-500 w-[25%] h-fit"></div>
+</div>

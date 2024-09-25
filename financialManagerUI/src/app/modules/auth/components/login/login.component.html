@@ -1,0 +1,39 @@
+<div class="size-full flex items-center justify-center">
+  <div class="border border-[#ba005c] h-fit w-1/3 rounded-lg">
+    <form [formGroup]="loginForm!" class="m-[15px]">
+      @if (errorMessage.length !== 0) {
+      <mat-error class="text-center">{{ errorMessage }}</mat-error>
+      }
+      <mat-form-field class="w-full">
+        <mat-label>Електрона пошта</mat-label>
+        <input matInput formControlName="email" type="email" />
+      </mat-form-field>
+      <mat-form-field class="w-full">
+        <mat-label>Пароль</mat-label>
+        <input matInput formControlName="password" type="password" />
+        @if (loginForm?.get('password')?.touched &&
+        loginForm?.get('password')?.invalid) {
+        <mat-error>Мінімальна довжина паролю - 12 символів</mat-error>
+        }
+      </mat-form-field>
+      <button
+        (click)="login()"
+        [disabled]="loginForm?.invalid"
+        class="w-full"
+        mat-raised-button
+      >
+        Увійти
+      </button>
+    </form>
+    <div class="w-full flex justify-center">
+      <span
+        >Відсутній аккаунт?
+        <span
+          class="text-[#ba005c] italic hover:cursor-pointer"
+          [routerLink]="['/register']"
+          >Зареєструйтесь</span
+        ></span
+      >
+    </div>
+  </div>
+</div>
