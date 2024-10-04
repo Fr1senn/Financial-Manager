@@ -13,4 +13,7 @@ export interface ITransactionService {
     request: TransactionRequest
   ): Observable<ApiResponse<undefined>>;
   deleteTransaction(transactionId: number): Observable<ApiResponse<undefined>>;
+  updateTransaction(
+    request: TransactionRequest
+  ): Observable<ApiResponse<undefined>>;
 }

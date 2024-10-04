@@ -69,4 +69,18 @@ export class TransactionService implements ITransactionService {
         })
       );
   }
+
+  public updateTransaction(
+    request: TransactionRequest
+  ): Observable<ApiResponse<undefined>> {
+    return this._httpClient
+      .patch<ApiResponse<undefined>>(this.API_URL, { ...request })
+      .pipe(
+        tap((res) => {
+          if (res.isSuccess) {
+            this.getTransactions(new PageRequest(5, 0)).subscribe();
+          }
+        })
+      );
+  }
 }

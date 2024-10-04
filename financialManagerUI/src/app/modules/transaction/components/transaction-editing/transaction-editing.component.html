@@ -1,0 +1,68 @@
+<mat-dialog-content>
+  <div class="flex items-center justify-between">
+    <span class="text-lg">Створення нової транзакції</span>
+    <button mat-icon-button (click)="closeTransactionEditingDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="transactionEditingForm!">
+    <mat-form-field class="w-full">
+      <mat-label>Назва</mat-label>
+      <input type="text" matInput formControlName="title" />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Вартість</mat-label>
+      <input
+        type="number"
+        matInput
+        formControlName="significance"
+        min="1"
+        max="99999.99"
+      />
+    </mat-form-field>
+    <mat-form-field class="w-full">
+      <mat-label>Тип транзакції</mat-label>
+      <mat-select formControlName="transactionType">
+        <mat-option [value]="transaction?.transactionType">{{
+          transaction?.transactionType === "income" ? "Дохід" : "Витрата"
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    @if(transaction?.transactionType === 'expense'){
+    <mat-form-field class="w-full">
+      <mat-label>Дата застосування витрати </mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="expenseDate" />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    @if(categories()?.length !== 0) {
+    <mat-form-field class="w-full">
+      <mat-label>Категорія</mat-label>
+      <mat-select formControlName="categoryTitle">
+        @for (category of categories(); track $index) {
+        <mat-option [value]="category.title">{{ category.title }}</mat-option>
+        }
+        <div>
+          <mat-paginator
+            class="!bg-transparent"
+            [showFirstLastButtons]="true"
+            [length]="categoriesNumber()"
+            [pageSize]="currentPageSize()"
+            [hidePageSize]="true"
+            (page)="pageHandler($event)"
+          ></mat-paginator>
+        </div>
+      </mat-select>
+    </mat-form-field>
+    } }
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button (click)="closeTransactionEditingDialog()">
+    Скасувати
+  </button>
+  <button mat-raised-button (click)="updateTransaction()">Редагувати</button>
+</mat-dialog-actions>

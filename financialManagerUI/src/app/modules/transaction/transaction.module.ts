@@ -16,6 +16,7 @@ import { TransactionItemComponent } from './components/transaction-item/transact
 import { TransactionCreationComponent } from './components/transaction-creation/transaction-creation.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryCreationComponent } from './components/category-creation/category-creation.component';
+import { TransactionEditingComponent } from './components/transaction-editing/transaction-editing.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CategoryCreationComponent } from './components/category-creation/catego
     TransactionItemComponent,
     TransactionCreationComponent,
     CategoryCreationComponent,
+    TransactionEditingComponent,
   ],
   imports: [
     CommonModule,
