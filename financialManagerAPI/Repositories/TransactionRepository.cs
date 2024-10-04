@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Security.Claims;
 using financial_manager.Entities;
 using financial_manager.Entities.DTOs;
 using financial_manager.Entities.Extentions;
@@ -7,8 +6,9 @@ using financial_manager.Entities.Models;
 using financial_manager.Entities.Requests;
 using financial_manager.Repositories.Interfaces;
 using financial_manager.Services.Interfaces;
-using financial_manager.Utilities;
+using System.Linq.Dynamic.Core;
 using Microsoft.EntityFrameworkCore;
+using financialManagerAPI.Utilities;
 
 namespace financial_manager.Repositories
 {
@@ -17,53 +17,69 @@ namespace financial_manager.Repositories
         private readonly FinancialManagerContext _financialManagerContext;
         private readonly ICategoryService _categoryService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ITransactionService _transactionService;
+
 
         public TransactionRepository(
             FinancialManagerContext financialManagerContext,
             ICategoryService categoryService,
-            IHttpContextAccessor httpContextAccessor,
-            ITransactionService transactionService
+            IHttpContextAccessor httpContextAccessor
+
+
         )
         {
             _financialManagerContext = financialManagerContext;
             _categoryService = categoryService;
             _httpContextAccessor = httpContextAccessor;
-            _transactionService = transactionService;
+
         }
 
-        public async Task<IEnumerable<TransactionDTO>> GetTransactionsAsync(PageRequest request)
+        public async Task<(IEnumerable<TransactionDTO>, int)> GetTransactionsAsync(PageRequest request)
         {
             int userId = _httpContextAccessor.HttpContext!.GetUserId();
 
-            return await _financialManagerContext
-                .Transactions.Include(t => t.Category)
-                .Where(t => t.UserId == userId)
-                .OrderByDescending(t => t.CreatedAt)
-                .Skip(request.PageSize * request.PageIndex)
-                .Take(request.PageSize)
+            var query = _financialManagerContext.Transactions
+                .Include(t => t.Category)
+                .Where(t => t.UserId == userId);
+
+            if (request.Filters.Any())
+            {
+                var predicate = FilterPredicateBuilder.BuildFilterPredicate<Transaction>(request.Filters);
+                query = query.Where(predicate);
+            }
+
+            int totalCount = query.Count();
+
+            if (request.SortOptions != null && request.SortOptions.Any())
+            {
+                var sortExpressions = request.SortOptions.Select(sortOption =>
+                    $"{sortOption.FieldName} {(sortOption.Ascending ? "asc" : "desc")}");
+
+                string sortExpression = string.Join(", ", sortExpressions);
+                query = query.OrderBy(sortExpression);
+            }
+            else
+            {
+                query = query.OrderByDescending(t => t.CreatedAt);
+            }
+
+            var transactions = await query
+                .Skip(request.Take * request.Skip)
+                .Take(request.Take)
                 .Select(t => new TransactionDTO
                 {
                     Id = t.Id,
                     Title = t.Title,
-                    Significance=t.Significance,
+                    Significance = t.Significance,
                     TransactionType = t.TransactionType,
                     CreatedAt = t.CreatedAt,
-                    ExpenseDate= t.ExpenseDate,
+                    ExpenseDate = t.ExpenseDate,
                     Category = t.Category,
                 })
                 .AsNoTracking()
                 .ToListAsync();
-        }
 
-        public async Task<Dictionary<string, TransactionSummary>> GetMonthlyTransactionsAsync(int year)
-        {
-            int userId = _httpContextAccessor.HttpContext!.GetUserId();
 
-            var monthlyTransactions = await _transactionService.GetMonthlyTransactionsAsync(year,userId);
-            var summaryByMonth = MonthProvider.GetMonthlyTransactionsSummary();
-            UpdateTransactionSummary(summaryByMonth, monthlyTransactions);
-            return summaryByMonth;
+            return (transactions, totalCount);
         }
 
         public async Task DeleteTransactionAsync(int transactionId)
@@ -96,7 +112,7 @@ namespace financial_manager.Repositories
             if (request.TransactionType == "expense")
             {
                 Category? category = await _categoryService.GetTransactionCategoryAsync(request.Category!.Title);
-                
+
                 _financialManagerContext.Transactions.Add(
                     new Transaction
                     {
@@ -159,35 +175,6 @@ namespace financial_manager.Repositories
             }
 
             await _financialManagerContext.SaveChangesAsync();
-        }
-
-        public async Task<int> GetUserTransactionQuantityAsync()
-        {
-            int userId = _httpContextAccessor.HttpContext!.GetUserId();
-            return (
-                await _financialManagerContext
-                    .Transactions.Where(t => t.UserId == userId)
-                    .AsNoTracking()
-                    .ToListAsync()
-            ).Count();
-        }
-
-        private void UpdateTransactionSummary(
-            Dictionary<string, TransactionSummary> summaryByMonth,
-            IEnumerable<MonthlyTransactionData> transactions
-        )
-        {
-            foreach (var transaction in transactions)
-            {
-                if (transaction.Month.HasValue)
-                {
-                    var monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(
-                        transaction.Month.Value
-                    );
-                    summaryByMonth[monthName].Income += transaction.Income;
-                    summaryByMonth[monthName].Expense += transaction.Expense;
-                }
-            }
         }
     }
 }
