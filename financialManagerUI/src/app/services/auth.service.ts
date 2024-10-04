@@ -77,7 +77,6 @@ export class AuthService implements IAuthService {
       .pipe(
         tap((res) => {
           if (res.isSuccess) {
-            console.log('service');
             this._tokenService.clearTokens();
           }
         })

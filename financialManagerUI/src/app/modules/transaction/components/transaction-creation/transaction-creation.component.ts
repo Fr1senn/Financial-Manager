@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, WritableSignal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TransactionRequest } from '../../../../entities/requests/transaction.request';
@@ -11,11 +17,11 @@ import { ITransactionService } from '../../services/interfaces/transaction.inter
 import { TransactionService } from '../../services/transaction.service';
 import { tap } from 'rxjs';
 import { CategoryCreationComponent } from '../category-creation/category-creation.component';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-transaction-creation',
   templateUrl: './transaction-creation.component.html',
-  styleUrl: './transaction-creation.component.css',
 })
 export class TransactionCreationComponent implements OnInit {
   private readonly transactionCreationDialogRef: MatDialogRef<TransactionCreationComponent> =
@@ -32,9 +38,12 @@ export class TransactionCreationComponent implements OnInit {
   ];
   public categories: WritableSignal<Category[] | undefined> =
     this._categoryService.categories;
+  public categoriesNumber: WritableSignal<number | undefined> =
+    this._categoryService.categoriesNumber;
+  public currentPageSize: WritableSignal<number> = signal<number>(3);
 
   public ngOnInit(): void {
-    this.getCategories();
+    this.getCategories(new PageRequest(this.currentPageSize(), 0));
     this.transactionCreationForm = this.createTransactionCreationForm();
   }
 
@@ -71,8 +80,12 @@ export class TransactionCreationComponent implements OnInit {
     this.categoryCreationDialog.open(CategoryCreationComponent);
   }
 
-  private getCategories(): void {
-    const request: PageRequest = new PageRequest(5, 0);
+  public pageHandler($event: PageEvent): void {
+    this.currentPageSize.set($event.pageSize);
+    this.getCategories(new PageRequest($event.pageSize, $event.pageIndex));
+  }
+
+  private getCategories(request: PageRequest): void {
     this._categoryService.getCategories(request).subscribe();
   }
 

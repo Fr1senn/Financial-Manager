@@ -57,6 +57,16 @@
           @for (category of categories(); track $index) {
           <mat-option [value]="category.title">{{ category.title }}</mat-option>
           }
+          <div>
+            <mat-paginator
+              class="!bg-transparent"
+              [showFirstLastButtons]="true"
+              [length]="categoriesNumber()"
+              [pageSize]="currentPageSize()"
+              [hidePageSize]="true"
+              (page)="pageHandler($event)"
+            ></mat-paginator>
+          </div>
         </mat-select>
       </mat-form-field>
       } }
