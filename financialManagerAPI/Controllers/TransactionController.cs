@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using financial_manager.Entities;
 using financial_manager.Entities.DTOs;
-using financial_manager.Entities.Models;
 using financial_manager.Entities.Requests;
 using financial_manager.Entities.Shared;
 using financial_manager.Repositories.Interfaces;
@@ -22,50 +20,14 @@ namespace financial_manager.Controllers
             _transactionRepository = transactionRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetTransactions([FromQuery] PageRequest request)
+        [HttpPost("all")]
+        public async Task<IActionResult> GetTransactions([FromBody] PageRequest request)
         {
             try
             {
-                return Ok(
-                    ApiResponse<IEnumerable<TransactionDTO>>.Succeed(
-                        await _transactionRepository.GetTransactionsAsync(request)
-                    )
-                );
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse.Fail(ex.Message, HttpStatusCode.BadRequest));
-            }
-        }
+                var (transactions, totalCount) = await _transactionRepository.GetTransactionsAsync(request);
 
-        [HttpGet("GetUserTransactionQuantity")]
-        public async Task<IActionResult> GetUserTransactionQuantity()
-        {
-            try
-            {
-                return Ok(
-                    ApiResponse<int>.Succeed(
-                        await _transactionRepository.GetUserTransactionQuantityAsync()
-                    )
-                );
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse.Fail(ex.Message, HttpStatusCode.BadRequest));
-            }
-        }
-
-        [HttpGet("GetMonthlyTransactions")]
-        public async Task<IActionResult> GetMonthlyTransactions([FromQuery] int year)
-        {
-            try
-            {
-                return Ok(
-                    ApiResponse<Dictionary<string, TransactionSummary>>.Succeed(
-                        await _transactionRepository.GetMonthlyTransactionsAsync(year)
-                    )
-                );
+                return Ok(ApiResponse<TransactionDTO>.Succeed(transactions, totalCount));
             }
             catch (Exception ex)
             {
@@ -87,7 +49,7 @@ namespace financial_manager.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequest request)
         {
             try

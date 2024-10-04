@@ -9,6 +9,7 @@ namespace financial_manager.Repositories.Interfaces
         Task<IEnumerable<CategoryDTO>> GetCategoriesAsync(PageRequest request);
         Task<int> GetUserCategoryQuantity();
         Task<Dictionary<string, decimal>> GetTotalCategoriesConsumption();
+        Task<(IEnumerable<CategoryDTO>, int)> GetCategoriesAsync(PageRequest request);
         Task DeleteCategoryAsync(int categoryId);
         Task CreateCategoryAsync(CategoryRequest request);
         Task UpdateCategoryAsync(CategoryRequest request);

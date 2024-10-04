@@ -32,6 +32,18 @@ namespace financial_manager.Entities.Shared
         }
     }
 
+    public class PagedResult<T>
+    {
+        public IEnumerable<T> Data { get; set; }
+        public int TotalCount { get; set; }
+
+        public PagedResult(IEnumerable<T> data, int totalCount)
+        {
+            Data = data;
+            TotalCount = totalCount;
+        }
+    }
+
     public class ApiResponse<T> : ApiResponse
     {
         public T? Result { get; set; }
@@ -50,6 +62,12 @@ namespace financial_manager.Entities.Shared
         public static ApiResponse<T> Succeed(T? result)
         {
             return new ApiResponse<T>(true, HttpStatusCode.OK, result);
+        }
+
+        public static ApiResponse<PagedResult<T>> Succeed(IEnumerable<T> data, int totalCount)
+        {
+            var pagedResult = new PagedResult<T>(data, totalCount);
+            return new ApiResponse<PagedResult<T>>(true, HttpStatusCode.OK, pagedResult);
         }
     }
 }

@@ -20,48 +20,13 @@ namespace financial_manager.Controllers
             _categoryRepository = categoryRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCategoriesAsync([FromQuery] PageRequest request)
+        [HttpPost("all")]
+        public async Task<IActionResult> GetCategoriesAsync([FromBody] PageRequest request)
         {
             try
             {
-                return Ok(
-                    ApiResponse<IEnumerable<CategoryDTO>>.Succeed(
-                        await _categoryRepository.GetCategoriesAsync(request)
-                    )
-                );
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse.Fail(ex.Message, HttpStatusCode.BadRequest));
-            }
-        }
-
-        [HttpGet("GetUserCategoryQuantity")]
-        public async Task<IActionResult> GetUserCategoryQuantityAsync()
-        {
-            try
-            {
-                return Ok(
-                    ApiResponse<int>.Succeed(await _categoryRepository.GetUserCategoryQuantity())
-                );
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResponse.Fail(ex.Message, HttpStatusCode.BadRequest));
-            }
-        }
-
-        [HttpGet("GetTotalCategoriesConsumption")]
-        public async Task<IActionResult> GetTotalCategoriesConsumptionAsync()
-        {
-            try
-            {
-                return Ok(
-                    ApiResponse<Dictionary<string, decimal>>.Succeed(
-                        await _categoryRepository.GetTotalCategoriesConsumption()
-                    )
-                );
+                var (categories, totalCount) = await _categoryRepository.GetCategoriesAsync(request);
+                return Ok(ApiResponse<CategoryDTO>.Succeed(categories, totalCount));
             }
             catch (Exception ex)
             {
@@ -83,7 +48,7 @@ namespace financial_manager.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] CategoryRequest request)
         {
             try
