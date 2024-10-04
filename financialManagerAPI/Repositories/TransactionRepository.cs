@@ -164,7 +164,9 @@ namespace financial_manager.Repositories
                 dbTransaction.Title = request.Title;
                 dbTransaction.Significance = request.Significance;
                 dbTransaction.TransactionType = request.TransactionType;
-                dbTransaction.ExpenseDate = request.ExpenseDate ?? dbTransaction.ExpenseDate;
+                dbTransaction.ExpenseDate = request.ExpenseDate.HasValue
+                    ? request.ExpenseDate.Value.ToLocalTime()
+                    : dbTransaction.ExpenseDate?.ToLocalTime();
                 dbTransaction.CategoryId = category.Id;
             }
             else
