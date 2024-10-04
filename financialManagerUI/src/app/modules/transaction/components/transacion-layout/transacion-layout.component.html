@@ -1,6 +1,7 @@
 <div class="size-full flex space-x-[15px]">
   <div class="w-[75%] h-full flex flex-col justify-between">
     <app-transactions
+      [transactions]="transactions()"
       class="grid grid-cols-3 auto-rows-auto gap-[15px] max-h-full overflow-y-auto"
     ></app-transactions>
     <div>
@@ -12,13 +13,14 @@
             Створити нову транзакцію
           </button>
         </div>
-        <div class="w-1/3">
+        <div class="w-fit">
           <mat-paginator
             class="!bg-transparent"
-            [length]="100"
-            [pageSize]="10"
+            [length]="transactionsNumber()"
+            [pageSize]="currentPageSize()"
             [showFirstLastButtons]="true"
-            [hidePageSize]="true"
+            [pageSizeOptions]="pageSizeOptions"
+            (page)="pageHandler($event)"
           ></mat-paginator>
         </div>
       </div>

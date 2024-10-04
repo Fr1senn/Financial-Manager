@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between">
     <span class="text-xl">{{ transaction?.title }}</span>
     <div>
-      <button mat-icon-button>
+      <button mat-icon-button (click)="openTransactionEditingDialog()">
         <mat-icon class="text-[#ba005c]">edit</mat-icon>
       </button>
       <button mat-icon-button (click)="deleteTransaction()">

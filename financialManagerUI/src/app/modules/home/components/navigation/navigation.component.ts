@@ -34,15 +34,12 @@ export class NavigationComponent implements OnInit {
   public logout(): void {
     this._authService
       .logout()
-      .pipe(
-        tap((res) => {
-          if (res.isSuccess) {
-            this._router.navigate(['login']);
-          }
-        }),
-        catchError((error) => throwError(() => error))
-      )
-      .subscribe();
+      .pipe(catchError((error) => throwError(() => error)))
+      .subscribe((res) => {
+        if (res.isSuccess) {
+          this._router.navigate(['login']);
+        }
+      });
   }
 
   private getUserCredentials(): void {
